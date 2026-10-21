@@ -56,6 +56,8 @@ flowchart TD
     end
 ```
 
+> 📖 **Comprehensive Engineering Diagram Suite**: For detailed dataflow diagrams, mathematical graph formulas, sequence flows, ERD schemas, and component hierarchies, view the full [Architecture & System Diagram Suite](docs/ARCHITECTURE_DIAGRAMS.md).
+
 ---
 
 ##  Key Innovations
