@@ -79,8 +79,8 @@ flowchart TD
 
 ### 2. Clone & Install
 ```bash
-git clone https://github.com/genre-tech/adaptive-attack-path.git
-cd adaptive-attack-path
+git clone https://github.com/genre-tech/aegispath.git
+cd aegispath
 pip install -r requirements.txt
 ```
 
