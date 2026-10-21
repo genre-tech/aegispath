@@ -1,4 +1,4 @@
-# ⚡ AegisPath Enterprise
+#  AegisPath Enterprise
 
 **Next-Generation Adaptive Attack Path Management (APM) & Multi-Cloud Cyber Threat Intelligence Engine**  
 *100% Free & Open-Source Software (FOSS) — Built on Memgraph MAGE, Redpanda, NetworkX, and Boto3.*
@@ -11,7 +11,7 @@
 
 ---
 
-## 🎯 Executive Summary
+##  Executive Summary
 
 Legacy vulnerability scanners report thousands of isolated vulnerabilities without operational context. Security leaders need to answer a single question:  
 > *"Can an external attacker reach our Domain Controllers or customer databases from the outside right now?"*
@@ -25,7 +25,7 @@ Legacy vulnerability scanners report thousands of isolated vulnerabilities witho
 
 ---
 
-## 📐 Architecture Overview
+##  Architecture Overview
 
 ```mermaid
 flowchart TD
@@ -58,7 +58,7 @@ flowchart TD
 
 ---
 
-## 🚀 Key Innovations
+##  Key Innovations
 
 - **Dynamic Inverse Traversability**: Attack path resistance is computed as:
   $$\text{Weight}(u, v) = \frac{1}{\text{Traversability}(u, v)}$$
@@ -71,7 +71,7 @@ flowchart TD
 
 ---
 
-## 🛠️ Quickstart Guide
+##  Quickstart Guide
 
 ### 1. Prerequisites
 - [Docker Desktop](https://www.docker.com/) (running)
@@ -102,10 +102,10 @@ Open **`http://localhost:8081`** in your browser.
 
 ---
 
-## 📖 Ingestion Workflows
+##  Ingestion Workflows
 
 ### A. AWS Cloud Discovery (Read-Only)
-1. Open the **Ingestion Hub** (`➕ Ingestion Hub`).
+1. Open the **Ingestion Hub** (` Ingestion Hub`).
 2. Select **AWS Cloud Discovery**.
 3. Input your AWS Access Key, Secret Key, and Region (e.g. `us-east-1` or `ap-southeast-2`).
 4. Click **Connect & Run Cloud Discovery**. The engine automatically normalizes Availability Zones and maps EC2 hosts, Security Groups, IAM Roles, S3 buckets, and RDS instances.
@@ -123,7 +123,7 @@ Open **`http://localhost:8081`** in your browser.
 
 ---
 
-## 📡 REST API Reference
+##  REST API Reference
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
@@ -139,6 +139,6 @@ Open **`http://localhost:8081`** in your browser.
 
 ---
 
-## 🛡️ License
+##  License
 
 Distributed under the Apache 2.0 License. See `LICENSE` for more information.
