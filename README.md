@@ -74,7 +74,7 @@ flowchart TD
 ##  Quickstart Guide
 
 ### 1. Prerequisites
-- [Docker Desktop](https://www.docker.com/) (running)
+- [Docker Desktop](https://www.docker.com/)
 - [Python 3.10+](https://www.python.org/)
 
 ### 2. Clone & Install
