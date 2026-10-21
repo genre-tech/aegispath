@@ -1,0 +1,98 @@
+{
+  "bloodhound_ad": {
+    "data": [
+      {
+        "ObjectIdentifier": "S-1-5-21-1001-512",
+        "type": "Group",
+        "Properties": {
+          "name": "DOMAIN ADMINS@CORP.LOCAL",
+          "distinguishedname": "CN=Domain Admins,CN=Users,DC=corp,DC=local"
+        },
+        "Members": [
+          { "ObjectIdentifier": "S-1-5-21-1001-1105" }
+        ]
+      },
+      {
+        "ObjectIdentifier": "S-1-5-21-1001-1105",
+        "type": "User",
+        "Properties": {
+          "name": "SARAH.CONNER@CORP.LOCAL",
+          "enabled": true,
+          "title": "Principal Cloud Security Architect"
+        },
+        "Aces": [
+          { "PrincipalSID": "S-1-5-21-1001-1102", "RightName": "GenericAll" }
+        ]
+      },
+      {
+        "ObjectIdentifier": "S-1-5-21-1001-1102",
+        "type": "User",
+        "Properties": {
+          "name": "DAVE.DEV@CORP.LOCAL",
+          "enabled": true,
+          "title": "Junior DevOps Engineer"
+        },
+        "Sessions": [
+          { "UserId": "S-1-5-21-1001-1102", "ComputerId": "COMP-WS-DAVE.CORP.LOCAL" }
+        ]
+      },
+      {
+        "ObjectIdentifier": "COMP-WS-DAVE.CORP.LOCAL",
+        "type": "Computer",
+        "Properties": {
+          "name": "COMP-WS-DAVE.CORP.LOCAL",
+          "operatingsystem": "Windows 11 Enterprise"
+        }
+      },
+      {
+        "ObjectIdentifier": "COMP-DC01.CORP.LOCAL",
+        "type": "Computer",
+        "Properties": {
+          "name": "COMP-DC01.CORP.LOCAL (Primary Domain Controller)",
+          "operatingsystem": "Windows Server 2022"
+        }
+      }
+    ]
+  },
+  "aws_cloud": {
+    "resources": [
+      {
+        "id": "i-09ab12cd34ef5678",
+        "name": "Public Ingress NGINX Gateway",
+        "type": "Compute",
+        "connections": [
+          { "target": "arn:aws:iam::123456789012:role/EC2AppRole", "relationship": "HAS_INSTANCE_PROFILE", "probability": 0.95 }
+        ]
+      },
+      {
+        "id": "arn:aws:iam::123456789012:role/EC2AppRole",
+        "name": "IAM Role: EC2AppRole",
+        "type": "IAMRole",
+        "connections": [
+          { "target": "arn:aws:iam::123456789012:role/DevOpsCloudAdminRole", "relationship": "CAN_ASSUME_ROLE", "probability": 0.85 }
+        ]
+      },
+      {
+        "id": "arn:aws:iam::123456789012:role/DevOpsCloudAdminRole",
+        "name": "IAM Role: DevOpsCloudAdminRole (Tier-0)",
+        "type": "IAMRole",
+        "connections": [
+          { "target": "arn:aws:rds:us-east-1:123456789012:db:production-core-db", "relationship": "ADMINISTERS_DATABASE", "probability": 0.99 },
+          { "target": "arn:aws:s3:::customer-pii-vault", "relationship": "FULL_S3_ACCESS", "probability": 0.99 }
+        ]
+      },
+      {
+        "id": "arn:aws:rds:us-east-1:123456789012:db:production-core-db",
+        "name": "Production Customer Relational DB (RDS)",
+        "type": "Database",
+        "is_tier_0": true
+      },
+      {
+        "id": "arn:aws:s3:::customer-pii-vault",
+        "name": "S3 Vault: customer-pii-vault (Encrypted)",
+        "type": "Database",
+        "is_tier_0": true
+      }
+    ]
+  }
+}

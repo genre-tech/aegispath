@@ -1,0 +1,73 @@
+version: "3.8"
+
+services:
+  # =========================================================================
+  # 1. Memgraph MAGE (Graph Core with Algorithms & Cypher Streams)
+  # =========================================================================
+  memgraph-mage:
+    image: memgraph/memgraph-mage:latest
+    container_name: adaptive-memgraph
+    ports:
+      - "7687:7687" # Bolt protocol (Cypher queries / Python client)
+      - "7444:7444" # Memgraph monitoring / logs
+    command: ["--log-level=WARNING", "--telemetry-enabled=false"]
+    networks:
+      - attack-path-net
+    restart: unless-stopped
+
+  # =========================================================================
+  # 2. Memgraph Lab (Web-based Visual Graph Explorer)
+  # =========================================================================
+  memgraph-lab:
+    image: memgraph/lab:latest
+    container_name: adaptive-memgraph-lab
+    ports:
+      - "3000:3000" # Browser UI
+    environment:
+      - QUICK_CONNECT_MG_HOST=memgraph-mage
+      - QUICK_CONNECT_MG_PORT=7687
+    depends_on:
+      - memgraph-mage
+    networks:
+      - attack-path-net
+    restart: unless-stopped
+
+  # =========================================================================
+  # 3. Redpanda (C++ Kafka-compatible Streaming Message Broker)
+  # =========================================================================
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:latest
+    container_name: adaptive-redpanda
+    command:
+      - redpanda start
+      - --smp 1
+      - --memory 512M
+      - --overprovisioned
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr internal://redpanda:9092,external://localhost:19092
+    ports:
+      - "19092:19092" # External Kafka API port
+      - "9644:9644"   # Redpanda Admin API
+    networks:
+      - attack-path-net
+    restart: unless-stopped
+
+  # =========================================================================
+  # 4. Redpanda Console (Web UI for Topics & Telemetry Streams)
+  # =========================================================================
+  redpanda-console:
+    image: docker.redpanda.com/redpandadata/console:latest
+    container_name: adaptive-redpanda-console
+    ports:
+      - "8080:8080" # Redpanda Web Console
+    environment:
+      - KAFKA_BROKERS=redpanda:9092
+    depends_on:
+      - redpanda
+    networks:
+      - attack-path-net
+    restart: unless-stopped
+
+networks:
+  attack-path-net:
+    driver: bridge

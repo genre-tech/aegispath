@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AegisPath Enterprise | Attack Path Management & Live Cyber Intelligence</title>
+  <!-- Cytoscape Core & Dagre Layout Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dagre@0.8.5/dist/dagre.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --card-header: #162032;
+      --border: #1f293d;
+      --border-light: #2d3b54;
+      --text: #f9fafb;
+      --text-muted: #94a3b8;
+      --accent: #3b82f6;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+      --purple: #a855f7;
+      --cyan: #06b6d4;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header */
+    header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 20;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #2563eb, #dc2626);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 16px;
+      box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+    }
+
+    .title-group h1 {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .title-group p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .status-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .pill.green {
+      background: rgba(16, 185, 129, 0.12);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .pill.blue {
+      background: rgba(59, 130, 246, 0.12);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* Global Metrics Bar */
+    .metrics-bar {
+      background: #0d1322;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      gap: 28px;
+      z-index: 15;
+    }
+
+    .metric-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .metric-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+    .metric-val {
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .metric-val.alert { color: var(--danger); }
+    .metric-val.purple { color: var(--purple); }
+    .metric-val.green { color: var(--success); }
+
+    /* Action Toolbar */
+    .toolbar {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .tool-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-input {
+      background: #0b0f19;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      width: 240px;
+      outline: none;
+      transition: border 0.15s;
+    }
+    .search-input:focus {
+      border-color: var(--accent);
+    }
+
+    button {
+      background: #1e293b;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    button:hover { background: #334155; border-color: var(--border-light); }
+    button.primary { background: #2563eb; border-color: #3b82f6; }
+    button.primary:hover { background: #1d4ed8; }
+    button.danger { background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: rgba(239, 68, 68, 0.4); }
+    button.danger:hover { background: rgba(239, 68, 68, 0.3); }
+
+    /* Main Workspace */
+    .workspace {
+      display: flex;
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #cy {
+      flex: 1;
+      height: 100%;
+      background: radial-gradient(circle at 50% 50%, #0d1527 0%, #080c16 100%);
+    }
+
+    /* Empty state overlay */
+    .empty-state {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      background: rgba(17, 24, 39, 0.95);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 36px 44px;
+      max-width: 480px;
+      display: none;
+      z-index: 5;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+    .empty-state h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .empty-state p { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
+
+    /* Side Drawer / Inspector */
+    .sidebar {
+      width: 380px;
+      background: var(--card-bg);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+    }
+
+    .tab-header {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      border-radius: 0;
+      padding: 11px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      color: var(--text);
+      border-bottom-color: var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .tab-content {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      font-size: 13px;
+    }
+
+    .detail-card {
+      background: #090d16;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .detail-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .kv-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 12px;
+    }
+    .kv-k { color: var(--text-muted); }
+    .kv-v { font-weight: 600; text-align: right; word-break: break-all; }
+
+    /* Bottom Event Ticker */
+    .event-ticker {
+      background: #0b0f19;
+      border-top: 1px solid var(--border);
+      padding: 6px 20px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 10;
+    }
+    .ticker-label {
+      font-weight: 700;
+      color: #60a5fa;
+      text-transform: uppercase;
+    }
+    .ticker-text {
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .modal {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 540px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .modal-header h3 { font-size: 16px; font-weight: 700; }
+    .form-group {
+      margin-bottom: 14px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      background: #090d16;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: var(--accent);
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header>
+    <div class="brand-section">
+      <div class="logo">&#x26A1;</div>
+      <div class="title-group">
+        <h1>AegisPath Enterprise</h1>
+        <p>Live Attack Path Management & Multi-Cloud Cartography</p>
+      </div>
+    </div>
+
+    <div class="status-pills">
+      <span class="pill green" id="pill-engine"><span class="pill-dot"></span> In-Memory Reasoning Engine</span>
+      <span class="pill blue" id="pill-memgraph"><span class="pill-dot"></span> Memgraph MAGE Live</span>
+      <span class="pill blue"><span class="pill-dot"></span> 1,754 CISA KEVs</span>
+      <span class="pill green" id="pill-sse"><span class="pill-dot"></span> Live Stream Active</span>
+    </div>
+  </header>
+
+  <!-- Metrics Bar -->
+  <div class="metrics-bar">
+    <div class="metric-item">
+      <span class="metric-label">Discovered Assets</span>
+      <span class="metric-val" id="metric-assets">0 Nodes</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-label">Crown Jewels (Tier-0)</span>
+      <span class="metric-val alert" id="metric-jewels">0 Targets</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-label">Critical Attack Probability</span>
+      <span class="metric-val alert" id="metric-prob">0.00%</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-label">Top Choke Point (Min-Cut)</span>
+      <span class="metric-val purple" id="metric-choke">None</span>
+    </div>
+    <div class="metric-item">
+      <span class="metric-label">Active Telemetry Alerts</span>
+      <span class="metric-val green" id="metric-alerts">0 Triggered</span>
+    </div>
+  </div>
+
+  <!-- Action Toolbar -->
+  <div class="toolbar">
+    <div class="tool-group">
+      <input type="text" class="search-input" id="search-box" placeholder="Search node, IP, role, CVE...">
+      <button class="primary" id="btn-highlight-path">&#x1F525; Highlight Critical Path</button>
+      <button class="danger" id="btn-sever-choke">&#x1F6E1;&#xFE0F; Evaluate Remediation</button>
+      <button class="primary" id="btn-open-ingest" style="background: #0284c7; border-color: #38bdf8;">&#x2795; Ingestion Hub</button>
+    </div>
+
+    <div class="tool-group">
+      <label style="font-size: 11px; color: var(--text-muted); font-weight: 600;">View Mode:</label>
+      <select id="select-view-mode" style="background: #0b0f19; border: 1px solid var(--border); color: var(--text); padding: 5px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer;">
+        <option value="paths" selected>&#x1F525; Attack Paths (Focused)</option>
+        <option value="crown_jewels">&#x1F451; Crown Jewels & Choke Points</option>
+        <option value="all">&#x1F310; Full Enterprise Topology</option>
+      </select>
+      <select id="select-layout" style="background: #0b0f19; border: 1px solid var(--border); color: var(--text); padding: 5px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer;">
+        <option value="dagre" selected>Hierarchical (Dagre)</option>
+        <option value="breadthfirst">Tree (Breadthfirst)</option>
+        <option value="concentric">Concentric Rings</option>
+      </select>
+      <button id="btn-reset-graph">&#x21BA; Reset Baseline</button>
+    </div>
+  </div>
+
+  <!-- Main Graph & Sidebar Workspace -->
+  <div class="workspace">
+    <div id="cy"></div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="empty-state">
+      <h3>No Infrastructure Ingested Yet</h3>
+      <p>Connect your AWS cloud account, paste a BloodHound Active Directory JSON export, or attach vulnerability scan reports to visualize real attack surfaces.</p>
+      <button class="primary" id="btn-empty-ingest" style="margin: 0 auto;">&#x2601;&#xFE0F; Open Ingestion Hub</button>
+    </div>
+
+    <!-- Sidebar Inspector -->
+    <div class="sidebar">
+      <div class="tab-header">
+        <button class="tab-btn active" id="tab-inspector">Entity Inspector</button>
+        <button class="tab-btn" id="tab-paths">Attack Paths</button>
+      </div>
+
+      <div class="tab-content" id="panel-inspector">
+        <div class="detail-card">
+          <div class="detail-title">
+            <span>Entity Metadata</span>
+            <button id="btn-toggle-jewel" style="display:none; padding: 2px 8px; font-size: 11px;">&#x1F451; Toggle Crown Jewel</button>
+          </div>
+          <div id="inspector-kv">
+            <p style="color: var(--text-muted); font-size: 12px;">Click any asset or vector in the canvas to inspect real attributes.</p>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <div class="detail-title">Threat & Exploit Intelligence</div>
+          <div id="threat-kv">
+            <p style="color: var(--text-muted); font-size: 12px;">Vulnerability enrichment from FIRST.org EPSS and CISA KEV will appear here.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="panel-paths" style="display: none;">
+        <div id="paths-list">
+          <p style="color: var(--text-muted); font-size: 12px;">No active attack paths reaching Crown Jewels.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Ticker -->
+  <div class="event-ticker">
+    <span class="ticker-label">&#x25CF; Live Telemetry Event:</span>
+    <span class="ticker-text" id="ticker-msg">Platform operational. Zero mock data. Ready for real infrastructure ingestion.</span>
+  </div>
+
+  <!-- Ingestion Hub Modal -->
+  <div class="modal-overlay" id="modal-ingest">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Multi-Domain Ingestion Hub</h3>
+        <button id="btn-close-modal" style="border: none; background: none; font-size: 16px; cursor: pointer; color: var(--text-muted);">&#x2715;</button>
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+        <button type="button" class="tab-btn active" id="modal-tab-aws" style="padding: 6px 12px; font-size: 12px;">AWS Cloud Discovery</button>
+        <button type="button" class="tab-btn" id="modal-tab-bh" style="padding: 6px 12px; font-size: 12px;">BloodHound AD</button>
+        <button type="button" class="tab-btn" id="modal-tab-cve" style="padding: 6px 12px; font-size: 12px;">Vulnerability Enrichment</button>
+      </div>
+
+      <!-- Tab 1: AWS Cloud -->
+      <div id="modal-pane-aws">
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+          Runs read-only cloud cartography via Boto3 to map real EC2 instances, Security Groups, IAM Roles, S3 buckets, and RDS databases.
+        </p>
+        <div class="form-group">
+          <label>AWS Access Key ID</label>
+          <input type="text" id="aws-key" placeholder="AKIA...">
+        </div>
+        <div class="form-group">
+          <label>AWS Secret Access Key</label>
+          <input type="password" id="aws-secret" placeholder="...">
+        </div>
+        <div class="form-group">
+          <label>AWS Session Token (Optional / STS)</label>
+          <input type="password" id="aws-token" placeholder="Optional for temporary STS/SSO credentials">
+        </div>
+        <div class="form-group">
+          <label>AWS Region</label>
+          <input type="text" id="aws-region" value="ap-southeast-2" placeholder="e.g. ap-southeast-2 or us-east-1">
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-cancel-modal">Cancel</button>
+          <button type="button" class="primary" id="btn-submit-aws">&#x2601;&#xFE0F; Connect & Run Cloud Discovery</button>
+        </div>
+      </div>
+
+      <!-- Tab 2: BloodHound AD -->
+      <div id="modal-pane-bh" style="display: none;">
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+          Ingest authentic Active Directory collections (BloodHound CE / SharpHound) from a local folder or raw JSON.
+        </p>
+        <div class="form-group">
+          <label>BloodHound Collection Folder</label>
+          <input type="text" id="bh-dir" value="D:\ad_sampledata" placeholder="e.g. D:\ad_sampledata">
+        </div>
+        <div class="form-group">
+          <label>Target Domain Collection</label>
+          <select id="bh-domain-select">
+            <option value="PHANTOM">PHANTOM.CORP (Primary Forest - 480 Nodes, Tier-0 DC01)</option>
+            <option value="GHOST">GHOST.CORP (Child Domain - 270 Nodes)</option>
+            <option value="WRAITH">WRAITH.CORP (External Trust - 930 Nodes)</option>
+            <option value="ALL">ALL DOMAINS (Unified Enterprise Forest)</option>
+          </select>
+        </div>
+        <div class="modal-actions" style="margin-bottom: 16px;">
+          <button type="button" class="primary" id="btn-submit-bh-dir" style="width: 100%; justify-content: center;">&#x1F4C1; Ingest AD Folder Data</button>
+        </div>
+        <div style="border-top: 1px solid var(--border); padding-top: 12px;">
+          <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 6px;">Or Paste BloodHound JSON Directly:</label>
+          <textarea id="bh-json" rows="3" style="font-family: monospace; font-size: 11px;" placeholder='{ "data": [ ... ] }'></textarea>
+          <div class="modal-actions" style="margin-top: 8px;">
+            <button type="button" id="btn-cancel-modal-bh">Cancel</button>
+            <button type="button" id="btn-submit-bh">Ingest Raw JSON</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Vulnerability Enrichment -->
+      <div id="modal-pane-cve" style="display: none;">
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+          Attach a discovered CVE to an EC2 instance or host. Automatically enriches with FIRST.org EPSS and CISA KEV threat intel.
+        </p>
+        <div class="form-group">
+          <label>Target Asset ID</label>
+          <input type="text" id="ingest-host" placeholder="e.g. i-0abcd1234efgh5678">
+        </div>
+        <div class="form-group">
+          <label>CVE Identifier (e.g. CVE-2024-21626, CVE-2023-38831)</label>
+          <input type="text" id="ingest-cve" placeholder="CVE-YYYY-XXXXX">
+        </div>
+        <div class="form-group">
+          <label>CVSS Base Score (Optional)</label>
+          <input type="number" id="ingest-cvss" min="0" max="10" step="0.1" value="8.5">
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-cancel-modal-cve">Cancel</button>
+          <button type="button" class="primary" id="btn-submit-cve">Enrich & Ingest CVE</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.origin;
+
+    let cy = null;
+    let currentPaths = [];
+    let selectedNodeId = null;
+    let currentViewMode = 'paths';
+    let currentLayout = 'dagre';
+
+    // 1. Fetch & Initialize Graph from REST API
+    async function loadGraph(mode) {
+      try {
+        const vMode = mode || currentViewMode;
+        const res = await fetch(`${API_BASE}/api/graph?mode=${vMode}`);
+        const data = await res.json();
+
+        // Update metrics bar with total and visible counts
+        const totalCount = data.metadata.total_nodes || 0;
+        const dispCount = data.metadata.displayed_nodes || data.nodes.length;
+        document.getElementById('metric-assets').textContent = `${totalCount} Nodes (${dispCount} visible)`;
+        document.getElementById('metric-jewels').textContent = `${data.metadata.crown_jewels_count} Targets`;
+
+        // Empty state check
+        if (!data.nodes || data.nodes.length <= 1) {
+          document.getElementById('empty-state').style.display = 'block';
+        } else {
+          document.getElementById('empty-state').style.display = 'none';
+        }
+
+        const elements = [];
+        data.nodes.forEach(n => {
+          let color = '#64748b'; // default host
+          let shape = 'ellipse';
+          if (n.type === 'CrownJewel') { color = '#ef4444'; }
+          else if (n.type === 'Vulnerability') { color = '#f97316'; shape = 'diamond'; }
+          else if (n.type === 'IAMRole' || n.type === 'Identity') { color = '#a855f7'; }
+          else if (n.type === 'SecurityGroup') { color = '#0ea5e9'; shape = 'hexagon'; }
+          else if (n.type === 'Perimeter') { color = '#0284c7'; }
+
+          elements.push({
+            data: {
+              id: n.id,
+              label: `${n.label}\n[${n.type}]`,
+              type: n.type,
+              color: color,
+              shape: shape,
+              raw: n
+            }
+          });
+        });
+
+        data.edges.forEach(e => {
+          elements.push({
+            data: {
+              id: e.id,
+              source: e.source,
+              target: e.target,
+              label: e.relationship,
+              weight: e.weight,
+              traversability: e.traversability,
+              active_alert: e.active_alert,
+              raw: e
+            }
+          });
+        });
+
+        initCytoscape(elements, currentLayout);
+        await refreshPaths();
+        await refreshChokepoints();
+      } catch (err) {
+        console.error("Failed to load graph from API:", err);
+      }
+    }
+
+    function getLayoutConfig(layoutName, count) {
+      if (layoutName === 'breadthfirst') {
+        return { name: 'breadthfirst', directed: true, padding: 30, spacingFactor: 1.25 };
+      }
+      if (layoutName === 'concentric') {
+        return { name: 'concentric', padding: 30, minNodeSpacing: 35 };
+      }
+      // Default Dagre (Hierarchical)
+      return {
+        name: 'dagre',
+        rankDir: 'LR',
+        nodeSep: count > 100 ? 35 : 60,
+        rankSep: count > 100 ? 70 : 120
+      };
+    }
+
+    function initCytoscape(elements, layoutName = 'dagre') {
+      if (cy) { cy.destroy(); }
+
+      const isDense = elements.length > 150;
+
+      cy = cytoscape({
+        container: document.getElementById('cy'),
+        elements: elements,
+        hideEdgesOnViewport: true,  // Hides edges during pan/zoom -> 60 FPS
+        textureOnViewport: true,    // Offscreen canvas texture during drag -> zero lag
+        motionBlur: false,
+        pixelRatio: 'auto',
+        wheelSensitivity: 0.25,
+        style: [
+          {
+            selector: 'node',
+            style: {
+              'label': 'data(label)',
+              'background-color': 'data(color)',
+              'shape': 'data(shape)',
+              'color': '#ffffff',
+              'font-size': '10px',
+              'font-weight': '600',
+              'text-valign': 'center',
+              'text-halign': 'center',
+              'text-wrap': 'wrap',
+              'text-max-width': '95px',
+              'width': 55,
+              'height': 55,
+              'border-width': 2,
+              'border-color': '#1f293d'
+            }
+          },
+          {
+            selector: 'node[type = "CrownJewel"]',
+            style: {
+              'width': 75,
+              'height': 75,
+              'border-width': 4,
+              'border-color': '#fca5a5'
+            }
+          },
+          {
+            selector: 'edge',
+            style: {
+              'width': 1.5,
+              'line-color': '#334155',
+              'target-arrow-color': '#475569',
+              'target-arrow-shape': 'triangle',
+              'curve-style': isDense ? 'straight' : 'bezier'
+            }
+          },
+          // Optimized label display: render text only when hovered, selected, or on critical path
+          {
+            selector: 'edge:hover, edge:selected, .critical-path',
+            style: {
+              'label': 'data(label)',
+              'font-size': '10px',
+              'color': '#94a3b8',
+              'text-background-color': '#090d16',
+              'text-background-opacity': 0.85,
+              'text-background-padding': '2px',
+              'z-index': 999
+            }
+          },
+          {
+            selector: '.critical-path',
+            style: {
+              'line-color': '#ef4444',
+              'target-arrow-color': '#ef4444',
+              'width': 4,
+              'curve-style': 'bezier',
+              'border-color': '#ef4444',
+              'border-width': 3
+            }
+          },
+          {
+            selector: '.alert-edge',
+            style: {
+              'line-color': '#f59e0b',
+              'target-arrow-color': '#f59e0b',
+              'width': 4,
+              'line-style': 'dashed'
+            }
+          },
+          {
+            selector: '.severed',
+            style: {
+              'opacity': 0.12
+            }
+          }
+        ],
+        layout: getLayoutConfig(layoutName, elements.length)
+      });
+
+      // Node selection inspector
+      cy.on('tap', 'node', function(evt){
+        selectedNodeId = evt.target.id();
+        const raw = evt.target.data('raw');
+        displayEntityInspector(raw);
+      });
+    }
+
+    // View Mode & Layout Change Handlers
+    document.getElementById('select-view-mode').addEventListener('change', (e) => {
+      currentViewMode = e.target.value;
+      loadGraph(currentViewMode);
+    });
+
+    document.getElementById('select-layout').addEventListener('change', (e) => {
+      currentLayout = e.target.value;
+      if (cy) {
+        cy.layout(getLayoutConfig(currentLayout, cy.elements().length)).run();
+      }
+    });
+
+    function displayEntityInspector(raw) {
+      document.getElementById('btn-toggle-jewel').style.display = 'inline-flex';
+
+      let kvHtml = `
+        <div class="kv-row"><span class="kv-k">Entity Name</span><span class="kv-v">${raw.label}</span></div>
+        <div class="kv-row"><span class="kv-k">Category</span><span class="kv-v">${raw.type}</span></div>
+        <div class="kv-row"><span class="kv-k">Identifier</span><span class="kv-v">${raw.id}</span></div>
+      `;
+      for (const [k, v] of Object.entries(raw.attributes || {})) {
+        kvHtml += `<div class="kv-row"><span class="kv-k">${k}</span><span class="kv-v">${v}</span></div>`;
+      }
+      document.getElementById('inspector-kv').innerHTML = kvHtml;
+
+      // Populate target host for CVE enrichment shortcut
+      const hostInput = document.getElementById('ingest-host');
+      if (hostInput && (raw.type === 'Host' || raw.id.startsWith('i-'))) {
+        hostInput.value = raw.id;
+      }
+
+      let threatHtml = ``;
+      if (raw.type === 'Vulnerability' || raw.id.startsWith('CVE-')) {
+        const inKev = raw.attributes?.in_cisa_kev;
+        threatHtml = `
+          <div class="kv-row"><span class="kv-k">CVE ID</span><span class="kv-v">${raw.id}</span></div>
+          <div class="kv-row"><span class="kv-k">CVSS Base</span><span class="kv-v" style="color:#ef4444;">${raw.attributes?.cvss || 'N/A'}</span></div>
+          <div class="kv-row"><span class="kv-k">EPSS Probability</span><span class="kv-v" style="color:#f97316;">${raw.attributes?.epss ? (raw.attributes.epss * 100).toFixed(2) + '%' : 'Calculated'}</span></div>
+          <div class="kv-row"><span class="kv-k">CISA KEV Catalog</span><span class="kv-v" style="color: ${inKev ? '#ef4444' : '#10b981'}; font-weight: 700;">${inKev ? 'EXPLOITED IN WILD' : 'No Known Active Ransomware Campaign'}</span></div>
+        `;
+      } else {
+        threatHtml = `<p style="color: var(--text-muted); font-size: 12px;">Asset is not a CVE node. Click connected vulnerability vectors to inspect threat intelligence.</p>`;
+      }
+      document.getElementById('threat-kv').innerHTML = threatHtml;
+    }
+
+    async function refreshPaths() {
+      const res = await fetch(`${API_BASE}/api/paths`);
+      const data = await res.json();
+      currentPaths = data.paths || [];
+
+      if (currentPaths.length > 0) {
+        const top = currentPaths[0];
+        document.getElementById('metric-prob').textContent = `${(top.cumulative_probability * 100).toFixed(2)}%`;
+      } else {
+        document.getElementById('metric-prob').textContent = `0.00%`;
+      }
+
+      let listHtml = '';
+      if (currentPaths.length === 0) {
+        listHtml = `<p style="color: var(--text-muted); font-size: 12px;">No active attack paths reaching Crown Jewels.</p>`;
+      } else {
+        currentPaths.forEach((p, idx) => {
+          listHtml += `
+            <div class="detail-card" style="cursor: pointer;" onclick="highlightSinglePath(${idx})">
+              <div class="detail-title">Path #${idx + 1}: ${p.source} &rarr; ${p.target}</div>
+              <div class="kv-row"><span class="kv-k">Cost</span><span class="kv-v">${p.total_cost}</span></div>
+              <div class="kv-row"><span class="kv-k">Cumulative Breach Prob</span><span class="kv-v" style="color: #ef4444;">${(p.cumulative_probability * 100).toFixed(2)}%</span></div>
+              <div class="kv-row"><span class="kv-k">Hops</span><span class="kv-v">${p.hop_count}</span></div>
+            </div>
+          `;
+        });
+      }
+      document.getElementById('paths-list').innerHTML = listHtml;
+    }
+
+    async function refreshChokepoints() {
+      const res = await fetch(`${API_BASE}/api/chokepoints`);
+      const data = await res.json();
+      const cps = data.chokepoints || [];
+      if (cps.length > 0) {
+        document.getElementById('metric-choke').textContent = cps[0].name;
+      } else {
+        document.getElementById('metric-choke').textContent = "None";
+      }
+    }
+
+    window.highlightSinglePath = function(idx) {
+      if (!currentPaths[idx]) return;
+      cy.elements().removeClass('critical-path severed');
+      const nodes = currentPaths[idx].path_nodes;
+      nodes.forEach(nId => cy.$(`#${nId}`).addClass('critical-path'));
+      for (let i = 0; i < nodes.length - 1; i++) {
+        cy.$(`edge[source="${nodes[i]}"][target="${nodes[i+1]}"]`).addClass('critical-path');
+      }
+    };
+
+    // Real-Time Server-Sent Events (SSE) Stream
+    function initEventStream() {
+      const evtSource = new EventSource(`${API_BASE}/api/events`);
+
+      evtSource.addEventListener('CONNECTED', (e) => {
+        document.getElementById('pill-sse').style.color = '#34d399';
+        document.getElementById('ticker-msg').textContent = 'Live SSE stream connected. Real-time telemetry monitoring active.';
+      });
+
+      evtSource.addEventListener('TELEMETRY_ALERT', (e) => {
+        const data = JSON.parse(e.data);
+        document.getElementById('ticker-msg').textContent = `[🔥 EDR ALERT] ${data.alert_type} on ${data.node_id}! Attack paths recalibrated.`;
+        document.getElementById('metric-alerts').textContent = `1 Alert Active`;
+        document.getElementById('metric-alerts').style.color = '#f59e0b';
+        if (data.top_path) {
+          document.getElementById('metric-prob').textContent = `${(data.top_path.cumulative_probability * 100).toFixed(2)}%`;
+        }
+        cy.$(`edge[source="${data.node_id}"], edge[target="${data.node_id}"]`).addClass('alert-edge');
+      });
+
+      evtSource.addEventListener('GRAPH_MUTATION', (e) => {
+        const data = JSON.parse(e.data);
+        document.getElementById('ticker-msg').textContent = `[+ GRAPH MUTATION] Cloud infrastructure updated!`;
+        loadGraph();
+      });
+
+      evtSource.addEventListener('GRAPH_RESET', (e) => {
+        document.getElementById('ticker-msg').textContent = `Graph reset to clean baseline.`;
+        document.getElementById('metric-alerts').textContent = `0 Triggered`;
+        document.getElementById('metric-alerts').style.color = 'var(--success)';
+        loadGraph();
+      });
+
+      evtSource.onerror = (err) => {
+        console.warn("SSE connection error, retrying...", err);
+      };
+    }
+
+    // --- Action Listeners ---
+    document.getElementById('btn-highlight-path').addEventListener('click', () => {
+      if (currentPaths.length > 0) {
+        highlightSinglePath(0);
+      } else {
+        alert("No active attack paths reaching Crown Jewels. Designate a Crown Jewel or ingest connected assets.");
+      }
+    });
+
+    document.getElementById('btn-toggle-jewel').addEventListener('click', async () => {
+      if (!selectedNodeId) return;
+      const res = await fetch(`${API_BASE}/api/node/toggle-crown-jewel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ node_id: selectedNodeId })
+      });
+      const data = await res.json();
+      loadGraph();
+      alert(`Asset [${data.node_id}] Crown Jewel status updated: ${data.is_crown_jewel ? 'MARKED AS TIER-0 CROWN JEWEL' : 'UNMARKED'}. Recalculated ${data.active_paths_count} paths.`);
+    });
+
+    document.getElementById('btn-sever-choke').addEventListener('click', async () => {
+      const res = await fetch(`${API_BASE}/api/simulate/sever`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ target_id: selectedNodeId || "" })
+      });
+      const data = await res.json();
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+      cy.$(`#${data.remediated_target}`).addClass('severed');
+      cy.$(`edge[source="${data.remediated_target}"], edge[target="${data.remediated_target}"]`).addClass('severed');
+      cy.elements().removeClass('critical-path alert-edge');
+      document.getElementById('ticker-msg').textContent = `[REMEDIATED] ${data.target_name} eliminated. ${data.risk_reduction_percentage}% reduction in attack paths!`;
+      alert(`Remediation Impact Analysis:\nEliminating [${data.target_name}] severed ${data.paths_eliminated} paths (${data.risk_reduction_percentage}% risk reduction)!`);
+      refreshPaths();
+    });
+
+    document.getElementById('btn-reset-graph').addEventListener('click', async () => {
+      if (confirm("Reset to clean slate? This clears the in-memory graph.")) {
+        await fetch(`${API_BASE}/api/reset`, { method: 'POST' });
+      }
+    });
+
+    document.getElementById('search-box').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      if (!q) { cy.elements().style('opacity', 1); return; }
+      cy.nodes().forEach(n => {
+        const label = n.data('label').toLowerCase();
+        const id = n.data('id').toLowerCase();
+        if (label.includes(q) || id.includes(q)) {
+          n.style('opacity', 1);
+          n.connectedEdges().style('opacity', 1);
+        } else {
+          n.style('opacity', 0.15);
+        }
+      });
+    });
+
+    // Ingestion Modal Controls & Multi-Tab Switcher
+    const modal = document.getElementById('modal-ingest');
+    document.getElementById('btn-open-ingest').addEventListener('click', () => modal.style.display = 'flex');
+    document.getElementById('btn-empty-ingest').addEventListener('click', () => modal.style.display = 'flex');
+    document.getElementById('btn-close-modal').addEventListener('click', () => modal.style.display = 'none');
+    ['btn-cancel-modal', 'btn-cancel-modal-bh', 'btn-cancel-modal-cve'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('click', () => modal.style.display = 'none');
+    });
+
+    const modalTabs = [
+      { tab: 'modal-tab-aws', pane: 'modal-pane-aws' },
+      { tab: 'modal-tab-bh', pane: 'modal-pane-bh' },
+      { tab: 'modal-tab-cve', pane: 'modal-pane-cve' }
+    ];
+
+    modalTabs.forEach(item => {
+      document.getElementById(item.tab).addEventListener('click', () => {
+        modalTabs.forEach(t => {
+          document.getElementById(t.tab).classList.remove('active');
+          document.getElementById(t.pane).style.display = 'none';
+        });
+        document.getElementById(item.tab).classList.add('active');
+        document.getElementById(item.pane).style.display = 'block';
+      });
+    });
+
+    // Submit AWS Live Discovery
+    document.getElementById('btn-submit-aws').addEventListener('click', async () => {
+      const key = document.getElementById('aws-key').value.trim();
+      const secret = document.getElementById('aws-secret').value.trim();
+      const token = document.getElementById('aws-token').value.trim() || undefined;
+      const region = document.getElementById('aws-region').value.trim() || 'ap-southeast-2';
+
+      if (!key || !secret) {
+        alert('Please enter your AWS Access Key ID and Secret Access Key.');
+        return;
+      }
+
+      document.getElementById('ticker-msg').textContent = `Connecting to AWS (${region})... querying EC2, Security Groups, IAM, S3, RDS...`;
+      modal.style.display = 'none';
+
+      try {
+        const res = await fetch(`${API_BASE}/api/ingest/aws/live`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_key: key,
+            secret_key: secret,
+            session_token: token,
+            region: region
+          })
+        });
+        const data = await res.json();
+        loadGraph();
+        let msg = `AWS Cloud Cartography Complete (Region: ${data.resolved_region})!\n\nDiscovered Real Infrastructure:\n` +
+          `• EC2 Hosts: ${data.counts?.ec2 || 0}\n` +
+          `• Security Groups: ${data.counts?.security_groups || 0}\n` +
+          `• IAM Roles: ${data.counts?.iam_roles || 0}\n` +
+          `• IAM Users: ${data.counts?.iam_users || 0}\n` +
+          `• S3 Buckets: ${data.counts?.s3 || 0}\n` +
+          `• RDS Databases: ${data.counts?.rds || 0}\n\n` +
+          `Total Nodes Added: ${data.nodes_added}\nTotal Vectors Added: ${data.edges_added}`;
+
+        if (Object.keys(data.errors || {}).length > 0) {
+          msg += `\n\nNotice: Some services were restricted by IAM policies:\n`;
+          for (const [srv, err] of Object.entries(data.errors)) {
+            msg += `• ${srv.toUpperCase()}: ${err.substring(0, 80)}...\n`;
+          }
+        }
+        alert(msg);
+      } catch (err) {
+        alert('Error connecting to AWS API: ' + err.message);
+      }
+    });
+
+    // Submit BloodHound AD Directory Ingestion
+    document.getElementById('btn-submit-bh-dir').addEventListener('click', async () => {
+      const dirPath = document.getElementById('bh-dir').value.trim() || 'D:\\ad_sampledata';
+      const domain = document.getElementById('bh-domain-select').value;
+      modal.style.display = 'none';
+      document.getElementById('ticker-msg').textContent = `Ingesting Active Directory data for ${domain} from ${dirPath}...`;
+      try {
+        const res = await fetch(`${API_BASE}/api/ingest/bloodhound/directory`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ directory: dirPath, domain: domain })
+        });
+        const data = await res.json();
+        if (data.error) {
+          alert("Ingestion error: " + data.error);
+          return;
+        }
+        loadGraph();
+        alert(`Active Directory Ingestion Complete!\n\n` +
+              `• Domain: ${data.domain_filter}\n` +
+              `• Files Processed: ${data.files_processed}\n` +
+              `• Nodes Added: ${data.nodes_added}\n` +
+              `• Privilege Vectors: ${data.edges_added}\n` +
+              `• Crown Jewels (DC & Admins): ${data.crown_jewels_count}\n` +
+              `• Evaluated Entry Points: ${data.entry_points_count}`);
+      } catch (err) {
+        alert("Failed to ingest AD directory: " + err.message);
+      }
+    });
+
+    // Submit BloodHound AD
+    document.getElementById('btn-submit-bh').addEventListener('click', async () => {
+      const rawText = document.getElementById('bh-json').value.trim();
+      if (!rawText) {
+        alert('Please paste BloodHound JSON data.');
+        return;
+      }
+      try {
+        const payload = JSON.parse(rawText);
+        modal.style.display = 'none';
+        document.getElementById('ticker-msg').textContent = 'Ingesting BloodHound Active Directory data...';
+        const res = await fetch(`${API_BASE}/api/ingest/bloodhound`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        loadGraph();
+        alert(`BloodHound AD Ingestion Complete!\nAdded: ${data.nodes_added} identities/hosts, ${data.edges_added} ACL relationships.`);
+      } catch (err) {
+        alert('Invalid JSON: ' + err.message);
+      }
+    });
+
+    // Submit Vulnerability CVE Enrichment
+    document.getElementById('btn-submit-cve').addEventListener('click', async () => {
+      const hostId = document.getElementById('ingest-host').value.trim();
+      const cveId = document.getElementById('ingest-cve').value.trim();
+      const cvss = parseFloat(document.getElementById('ingest-cvss').value || 8.0);
+      if (!hostId || !cveId) {
+        alert("Please enter target host ID and CVE ID.");
+        return;
+      }
+
+      modal.style.display = 'none';
+      document.getElementById('ticker-msg').textContent = `Enriching ${cveId} against FIRST.org EPSS and CISA KEV...`;
+      try {
+        const res = await fetch(`${API_BASE}/api/ingest/cve`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            target_host_id: hostId,
+            cve_id: cveId,
+            cvss_score: cvss
+          })
+        });
+        const data = await res.json();
+        loadGraph();
+        alert(`Vulnerability Ingested!\nEnriched ${cveId}:\n• EPSS: ${(data.cve_enriched?.epss_score * 100).toFixed(2)}%\n• CISA KEV: ${data.cve_enriched?.in_cisa_kev ? 'Active In Wild' : 'Not listed'}`);
+      } catch (err) {
+        alert('Ingest error: ' + err.message);
+      }
+    });
+
+    // Tab switcher
+    document.getElementById('tab-inspector').addEventListener('click', () => {
+      document.getElementById('tab-inspector').classList.add('active');
+      document.getElementById('tab-paths').classList.remove('active');
+      document.getElementById('panel-inspector').style.display = 'block';
+      document.getElementById('panel-paths').style.display = 'none';
+    });
+    document.getElementById('tab-paths').addEventListener('click', () => {
+      document.getElementById('tab-paths').classList.add('active');
+      document.getElementById('tab-inspector').classList.remove('active');
+      document.getElementById('panel-paths').style.display = 'block';
+      document.getElementById('panel-inspector').style.display = 'none';
+    });
+
+    // Start
+    loadGraph();
+    initEventStream();
+  </script>
+</body>
+</html>
