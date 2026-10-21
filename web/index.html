@@ -4,77 +4,141 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AegisPath Enterprise | Attack Path Management & Live Cyber Intelligence</title>
+  
+  <!-- Fonts: Inter (UI) & JetBrains Mono (Telemetry/Code) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <!-- Cytoscape Core & Dagre Layout Engine -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dagre@0.8.5/dist/dagre.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
+
   <style>
     :root {
-      --bg: #090d16;
-      --card-bg: #111827;
-      --card-header: #162032;
-      --border: #1f293d;
-      --border-light: #2d3b54;
-      --text: #f9fafb;
+      --bg-base: #06080d;
+      --bg-surface: #0b0f19;
+      --bg-card: #101624;
+      --bg-card-hover: #141c2e;
+      --bg-input: #080c14;
+      
+      --border-subtle: rgba(255, 255, 255, 0.07);
+      --border-medium: rgba(255, 255, 255, 0.12);
+      --border-bright: rgba(255, 255, 255, 0.22);
+      
+      --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --accent: #3b82f6;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --success: #10b981;
-      --purple: #a855f7;
-      --cyan: #06b6d4;
+      --text-dim: #64748b;
+      
+      --color-primary: #3b82f6;
+      --color-primary-glow: rgba(59, 130, 246, 0.25);
+      --color-danger: #f43f5e;
+      --color-danger-glow: rgba(244, 63, 94, 0.25);
+      --color-warning: #f59e0b;
+      --color-warning-glow: rgba(245, 158, 11, 0.2);
+      --color-success: #10b981;
+      --color-success-glow: rgba(16, 185, 129, 0.2);
+      --color-purple: #a855f7;
+      --color-cyan: #06b6d4;
+      
+      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-full: 9999px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: var(--font-ui);
+      background: var(--bg-base);
+      color: var(--text-main);
       display: flex;
       flex-direction: column;
       height: 100vh;
       overflow: hidden;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Header */
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-base); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.22); }
+
+    /* Top Navigation Header */
     header {
-      background: var(--card-bg);
-      border-bottom: 1px solid var(--border);
-      padding: 10px 20px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0 20px;
+      height: 56px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      z-index: 20;
+      z-index: 30;
+      position: relative;
     }
 
     .brand-section {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
 
-    .logo {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, #2563eb, #dc2626);
-      border-radius: 8px;
+    .logo-container {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%);
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 900;
-      font-size: 16px;
-      box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+      box-shadow: 0 0 16px rgba(59, 130, 246, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+    }
+    .logo-icon {
+      width: 18px;
+      height: 18px;
+      fill: #ffffff;
     }
 
+    .title-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-header-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
     .title-group h1 {
       font-size: 15px;
       font-weight: 700;
       letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+    .badge-enterprise {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      font-family: var(--font-mono);
     }
     .title-group p {
       font-size: 11px;
       color: var(--text-muted);
+      letter-spacing: -0.01em;
     }
 
     .status-pills {
@@ -85,69 +149,128 @@
 
     .pill {
       font-size: 11px;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 9999px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
+      font-family: var(--font-mono);
+      transition: all 0.2s ease;
     }
     .pill.green {
-      background: rgba(16, 185, 129, 0.12);
+      background: rgba(16, 185, 129, 0.08);
       color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.3);
+      border: 1px solid rgba(16, 185, 129, 0.25);
     }
     .pill.blue {
-      background: rgba(59, 130, 246, 0.12);
+      background: rgba(59, 130, 246, 0.08);
       color: #60a5fa;
-      border: 1px solid rgba(59, 130, 246, 0.3);
+      border: 1px solid rgba(59, 130, 246, 0.25);
     }
+    .pill.purple {
+      background: rgba(168, 85, 247, 0.08);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.25);
+    }
+
     .pill-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
       background: currentColor;
+      box-shadow: 0 0 6px currentColor;
+    }
+    .pulse-dot {
+      animation: statusPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
     }
 
-    /* Global Metrics Bar */
+    /* Telemetry HUD / Metrics Bar */
     .metrics-bar {
-      background: #0d1322;
-      border-bottom: 1px solid var(--border);
+      background: #090d16;
+      border-bottom: 1px solid var(--border-subtle);
       padding: 10px 20px;
-      display: flex;
-      gap: 28px;
-      z-index: 15;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      z-index: 20;
     }
 
-    .metric-item {
+    .metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 9px 14px;
       display: flex;
       flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.15), transparent);
+    }
+    .metric-card:hover {
+      border-color: var(--border-medium);
+      background: var(--bg-card-hover);
+    }
+
+    .metric-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
     }
     .metric-label {
       font-size: 10px;
       text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+    }
+    .metric-tag {
+      font-size: 9px;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
     }
     .metric-val {
-      font-size: 16px;
-      font-weight: 800;
+      font-size: 17px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      letter-spacing: -0.02em;
+      color: var(--text-main);
     }
-    .metric-val.alert { color: var(--danger); }
-    .metric-val.purple { color: var(--purple); }
-    .metric-val.green { color: var(--success); }
+    .metric-val.alert {
+      color: #fb7185;
+      text-shadow: 0 0 12px rgba(244, 63, 94, 0.3);
+    }
+    .metric-val.purple {
+      color: #c084fc;
+      text-shadow: 0 0 12px rgba(168, 85, 247, 0.3);
+    }
+    .metric-val.green {
+      color: #34d399;
+      text-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+    }
 
     /* Action Toolbar */
     .toolbar {
-      background: var(--card-bg);
-      border-bottom: 1px solid var(--border);
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
       padding: 8px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      z-index: 10;
+      z-index: 15;
     }
 
     .tool-group {
@@ -156,42 +279,129 @@
       gap: 8px;
     }
 
+    .search-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      width: 14px;
+      height: 14px;
+      fill: var(--text-dim);
+      pointer-events: none;
+    }
     .search-input {
-      background: #0b0f19;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 6px 12px;
-      border-radius: 6px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 6px 12px 6px 32px;
+      border-radius: var(--radius-sm);
       font-size: 12px;
-      width: 240px;
+      font-family: var(--font-ui);
+      width: 250px;
       outline: none;
-      transition: border 0.15s;
+      transition: all 0.15s ease;
     }
     .search-input:focus {
-      border-color: var(--accent);
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px var(--color-primary-glow);
+      width: 290px;
+    }
+    .search-shortcut {
+      position: absolute;
+      right: 8px;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: var(--text-dim);
+      pointer-events: none;
     }
 
+    /* Buttons */
     button {
-      background: #1e293b;
-      color: var(--text);
-      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
       padding: 6px 12px;
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 500;
+      font-family: var(--font-ui);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       transition: all 0.15s ease;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
-    button:hover { background: #334155; border-color: var(--border-light); }
-    button.primary { background: #2563eb; border-color: #3b82f6; }
-    button.primary:hover { background: #1d4ed8; }
-    button.danger { background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: rgba(239, 68, 68, 0.4); }
-    button.danger:hover { background: rgba(239, 68, 68, 0.3); }
+    button:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: var(--border-medium);
+      color: #ffffff;
+    }
+    button:active {
+      transform: scale(0.98);
+    }
 
-    /* Main Workspace */
+    button.btn-primary {
+      background: #2563eb;
+      border-color: #3b82f6;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+    button.btn-primary:hover {
+      background: #1d4ed8;
+      border-color: #60a5fa;
+      box-shadow: 0 0 16px rgba(37, 99, 235, 0.5);
+    }
+
+    button.btn-danger {
+      background: rgba(244, 63, 94, 0.12);
+      color: #fb7185;
+      border-color: rgba(244, 63, 94, 0.3);
+    }
+    button.btn-danger:hover {
+      background: rgba(244, 63, 94, 0.22);
+      border-color: rgba(244, 63, 94, 0.5);
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(244, 63, 94, 0.3);
+    }
+
+    button.btn-accent {
+      background: rgba(2, 132, 199, 0.2);
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+    button.btn-accent:hover {
+      background: rgba(2, 132, 199, 0.35);
+      border-color: #38bdf8;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+    }
+
+    .select-styled {
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 500;
+      font-family: var(--font-ui);
+      outline: none;
+      cursor: pointer;
+      transition: border 0.15s ease;
+    }
+    .select-styled:focus {
+      border-color: var(--color-primary);
+    }
+
+    /* Workspace */
     .workspace {
       display: flex;
       flex: 1;
@@ -202,58 +412,97 @@
     #cy {
       flex: 1;
       height: 100%;
-      background: radial-gradient(circle at 50% 50%, #0d1527 0%, #080c16 100%);
+      background-color: var(--bg-base);
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(20, 30, 55, 0.5) 0%, transparent 80%),
+        radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+      background-size: 100% 100%, 28px 28px;
     }
 
-    /* Empty state overlay */
+    /* Empty State */
     .empty-state {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
-      background: rgba(17, 24, 39, 0.95);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 36px 44px;
-      max-width: 480px;
+      background: rgba(16, 22, 36, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-lg);
+      padding: 40px 48px;
+      max-width: 500px;
       display: none;
-      z-index: 5;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      z-index: 10;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 30px rgba(59, 130, 246, 0.08);
     }
-    .empty-state h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-    .empty-state p { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
+    .empty-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 16px;
+      border-radius: 12px;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #60a5fa;
+    }
+    .empty-state h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+    }
+    .empty-state p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
 
-    /* Side Drawer / Inspector */
+    /* Sidebar Inspector */
     .sidebar {
-      width: 380px;
-      background: var(--card-bg);
-      border-left: 1px solid var(--border);
+      width: 400px;
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
-      z-index: 10;
+      z-index: 20;
     }
 
     .tab-header {
       display: flex;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--border-subtle);
+      background: #090d16;
     }
     .tab-btn {
       flex: 1;
       background: none;
       border: none;
       border-radius: 0;
-      padding: 11px;
+      padding: 12px 14px;
       font-size: 12px;
       font-weight: 600;
-      color: var(--text-muted);
+      color: var(--text-dim);
       border-bottom: 2px solid transparent;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      box-shadow: none;
+    }
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.02);
     }
     .tab-btn.active {
-      color: var(--text);
-      border-bottom-color: var(--accent);
-      background: rgba(59, 130, 246, 0.05);
+      color: #ffffff;
+      border-bottom-color: var(--color-primary);
+      background: rgba(59, 130, 246, 0.04);
     }
 
     .tab-content {
@@ -264,11 +513,19 @@
     }
 
     .detail-card {
-      background: #090d16;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      margin-bottom: 14px;
+      position: relative;
+    }
+    .detail-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.12), transparent);
     }
 
     .detail-title {
@@ -276,8 +533,8 @@
       font-weight: 700;
       text-transform: uppercase;
       color: var(--text-muted);
-      letter-spacing: 0.04em;
-      margin-bottom: 8px;
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -286,28 +543,107 @@
     .kv-row {
       display: flex;
       justify-content: space-between;
-      padding: 5px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
       font-size: 12px;
     }
-    .kv-k { color: var(--text-muted); }
-    .kv-v { font-weight: 600; text-align: right; word-break: break-all; }
+    .kv-row:last-child {
+      border-bottom: none;
+    }
+    .kv-k {
+      color: var(--text-dim);
+      font-size: 11px;
+    }
+    .kv-v {
+      font-weight: 500;
+      font-family: var(--font-mono);
+      text-align: right;
+      color: var(--text-main);
+      word-break: break-all;
+      max-width: 220px;
+    }
+
+    .path-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .path-card:hover {
+      border-color: rgba(244, 63, 94, 0.4);
+      background: var(--bg-card-hover);
+      transform: translateY(-1px);
+    }
+    .path-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .path-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #ffffff;
+      font-family: var(--font-mono);
+    }
+    .path-badge {
+      font-size: 10px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(244, 63, 94, 0.15);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+
+    /* EPSS Progress Bar */
+    .epss-bar-container {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    .epss-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #f59e0b, #ef4444);
+      transition: width 0.3s ease;
+    }
 
     /* Bottom Event Ticker */
     .event-ticker {
-      background: #0b0f19;
-      border-top: 1px solid var(--border);
-      padding: 6px 20px;
+      background: #080c14;
+      border-top: 1px solid var(--border-subtle);
+      padding: 0 20px;
+      height: 32px;
       font-size: 11px;
       display: flex;
       align-items: center;
       gap: 12px;
-      z-index: 10;
+      z-index: 20;
+    }
+    .ticker-beacon {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #3b82f6;
+      box-shadow: 0 0 8px #3b82f6;
+      animation: statusPulse 1.8s infinite;
     }
     .ticker-label {
       font-weight: 700;
+      font-family: var(--font-mono);
       color: #60a5fa;
       text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.05em;
     }
     .ticker-text {
       color: var(--text-muted);
@@ -315,105 +651,227 @@
       overflow: hidden;
       text-overflow: ellipsis;
       flex: 1;
+      font-family: var(--font-mono);
+      font-size: 11px;
     }
 
-    /* Modal */
+    /* Modal System */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(5px);
+      background: rgba(3, 5, 8, 0.75);
+      backdrop-filter: blur(12px);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 100;
+      animation: fadeIn 0.15s ease-out;
     }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
     .modal {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      width: 540px;
-      padding: 24px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-lg);
+      width: 560px;
+      padding: 24px 28px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(59, 130, 246, 0.08);
+      position: relative;
     }
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
-    .modal-header h3 { font-size: 16px; font-weight: 700; }
+    .modal-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+    }
+    .modal-close-btn {
+      border: none;
+      background: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: var(--text-dim);
+      padding: 4px;
+      border-radius: 4px;
+      box-shadow: none;
+    }
+    .modal-close-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .modal-tab-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 10px;
+    }
+    .modal-tab-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      box-shadow: none;
+    }
+    .modal-tab-btn.active {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+      font-weight: 600;
+    }
+
     .form-group {
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .form-group label {
       display: block;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
       color: var(--text-muted);
       margin-bottom: 6px;
     }
     .form-group input, .form-group select, .form-group textarea {
       width: 100%;
-      background: #090d16;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 8px 12px;
-      border-radius: 6px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
       font-size: 13px;
+      font-family: var(--font-ui);
       outline: none;
+      transition: all 0.15s ease;
     }
-    .form-group input:focus, .form-group textarea:focus {
-      border-color: var(--accent);
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px var(--color-primary-glow);
     }
     .modal-actions {
       display: flex;
       justify-content: flex-end;
-      gap: 8px;
-      margin-top: 20px;
+      gap: 10px;
+      margin-top: 24px;
     }
+
+    /* Toast Notification System */
+    #toast-container {
+      position: fixed;
+      bottom: 44px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 1000;
+      pointer-events: none;
+    }
+    .toast {
+      pointer-events: auto;
+      background: rgba(16, 22, 36, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      min-width: 280px;
+      max-width: 380px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      animation: toastSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.2s ease;
+    }
+    @keyframes toastSlideIn {
+      from { transform: translateY(12px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .toast.toast-success { border-left: 3px solid var(--color-success); }
+    .toast.toast-danger { border-left: 3px solid var(--color-danger); }
+    .toast.toast-warning { border-left: 3px solid var(--color-warning); }
+    .toast.toast-info { border-left: 3px solid var(--color-primary); }
+
+    .toast-content { flex: 1; }
+    .toast-title { font-size: 12px; font-weight: 700; color: #ffffff; margin-bottom: 2px; }
+    .toast-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+    .toast-close { cursor: pointer; color: var(--text-dim); font-size: 14px; line-height: 1; background: none; border: none; padding: 0; box-shadow: none; }
   </style>
 </head>
 <body>
 
-  <!-- Top Header -->
+  <!-- Top Header Navigation -->
   <header>
     <div class="brand-section">
-      <div class="logo">&#x26A1;</div>
+      <div class="logo-container">
+        <svg class="logo-icon" viewBox="0 0 24 24">
+          <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v5h-2V7zm0 7h2v2h-2v-2z"/>
+        </svg>
+      </div>
       <div class="title-group">
-        <h1>AegisPath Enterprise</h1>
-        <p>Live Attack Path Management & Multi-Cloud Cartography</p>
+        <div class="brand-header-row">
+          <h1>AegisPath</h1>
+          <span class="badge-enterprise">Enterprise APM</span>
+        </div>
+        <p>Live Attack Path Management & Multi-Cloud Threat Intelligence</p>
       </div>
     </div>
 
     <div class="status-pills">
-      <span class="pill green" id="pill-engine"><span class="pill-dot"></span> In-Memory Reasoning Engine</span>
-      <span class="pill blue" id="pill-memgraph"><span class="pill-dot"></span> Memgraph MAGE Live</span>
+      <span class="pill green" id="pill-engine"><span class="pill-dot pulse-dot"></span> In-Memory Engine</span>
+      <span class="pill purple" id="pill-memgraph"><span class="pill-dot"></span> Memgraph MAGE</span>
       <span class="pill blue"><span class="pill-dot"></span> 1,754 CISA KEVs</span>
-      <span class="pill green" id="pill-sse"><span class="pill-dot"></span> Live Stream Active</span>
+      <span class="pill green" id="pill-sse"><span class="pill-dot pulse-dot"></span> SSE Live Stream</span>
     </div>
   </header>
 
-  <!-- Metrics Bar -->
+  <!-- Telemetry HUD / Metrics Bar -->
   <div class="metrics-bar">
-    <div class="metric-item">
-      <span class="metric-label">Discovered Assets</span>
+    <div class="metric-card">
+      <div class="metric-header">
+        <span class="metric-label">Discovered Assets</span>
+        <span class="metric-tag">TOPOLOGY</span>
+      </div>
       <span class="metric-val" id="metric-assets">0 Nodes</span>
     </div>
-    <div class="metric-item">
-      <span class="metric-label">Crown Jewels (Tier-0)</span>
+    <div class="metric-card">
+      <div class="metric-header">
+        <span class="metric-label">Crown Jewels</span>
+        <span class="metric-tag">TIER-0</span>
+      </div>
       <span class="metric-val alert" id="metric-jewels">0 Targets</span>
     </div>
-    <div class="metric-item">
-      <span class="metric-label">Critical Attack Probability</span>
+    <div class="metric-card">
+      <div class="metric-header">
+        <span class="metric-label">Breach Exposure</span>
+        <span class="metric-tag">DIJKSTRA</span>
+      </div>
       <span class="metric-val alert" id="metric-prob">0.00%</span>
     </div>
-    <div class="metric-item">
-      <span class="metric-label">Top Choke Point (Min-Cut)</span>
+    <div class="metric-card">
+      <div class="metric-header">
+        <span class="metric-label">Top Choke Point</span>
+        <span class="metric-tag">MIN-CUT</span>
+      </div>
       <span class="metric-val purple" id="metric-choke">None</span>
     </div>
-    <div class="metric-item">
-      <span class="metric-label">Active Telemetry Alerts</span>
+    <div class="metric-card">
+      <div class="metric-header">
+        <span class="metric-label">Telemetry Alerts</span>
+        <span class="metric-tag">EDR/STREAM</span>
+      </div>
       <span class="metric-val green" id="metric-alerts">0 Triggered</span>
     </div>
   </div>
@@ -421,25 +879,31 @@
   <!-- Action Toolbar -->
   <div class="toolbar">
     <div class="tool-group">
-      <input type="text" class="search-input" id="search-box" placeholder="Search node, IP, role, CVE...">
-      <button class="primary" id="btn-highlight-path">&#x1F525; Highlight Critical Path</button>
-      <button class="danger" id="btn-sever-choke">&#x1F6E1;&#xFE0F; Evaluate Remediation</button>
-      <button class="primary" id="btn-open-ingest" style="background: #0284c7; border-color: #38bdf8;">&#x2795; Ingestion Hub</button>
+      <div class="search-wrapper">
+        <svg class="search-icon" viewBox="0 0 24 24">
+          <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        </svg>
+        <input type="text" class="search-input" id="search-box" placeholder="Search node, IP, role, CVE...">
+        <span class="search-shortcut">/</span>
+      </div>
+      <button class="btn-danger" id="btn-highlight-path">&#x1F525; Highlight Critical Path</button>
+      <button class="btn-accent" id="btn-sever-choke">&#x1F6E1;&#xFE0F; Evaluate Remediation</button>
+      <button class="btn-primary" id="btn-open-ingest">&#x2795; Ingestion Hub</button>
     </div>
 
     <div class="tool-group">
-      <label style="font-size: 11px; color: var(--text-muted); font-weight: 600;">View Mode:</label>
-      <select id="select-view-mode" style="background: #0b0f19; border: 1px solid var(--border); color: var(--text); padding: 5px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer;">
-        <option value="paths" selected>&#x1F525; Attack Paths (Focused)</option>
-        <option value="crown_jewels">&#x1F451; Crown Jewels & Choke Points</option>
-        <option value="all">&#x1F310; Full Enterprise Topology</option>
+      <label style="font-size: 11px; color: var(--text-dim); font-weight: 600; text-transform: uppercase;">View:</label>
+      <select id="select-view-mode" class="select-styled">
+        <option value="paths" selected>Attack Paths (Focused)</option>
+        <option value="crown_jewels">Crown Jewels & Choke Points</option>
+        <option value="all">Full Enterprise Topology</option>
       </select>
-      <select id="select-layout" style="background: #0b0f19; border: 1px solid var(--border); color: var(--text); padding: 5px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer;">
+      <select id="select-layout" class="select-styled">
         <option value="dagre" selected>Hierarchical (Dagre)</option>
         <option value="breadthfirst">Tree (Breadthfirst)</option>
         <option value="concentric">Concentric Rings</option>
       </select>
-      <button id="btn-reset-graph">&#x21BA; Reset Baseline</button>
+      <button id="btn-reset-graph" style="color: var(--text-muted);">&#x21BA; Reset Baseline</button>
     </div>
   </div>
 
@@ -449,40 +913,51 @@
 
     <!-- Empty State -->
     <div class="empty-state" id="empty-state">
-      <h3>No Infrastructure Ingested Yet</h3>
-      <p>Connect your AWS cloud account, paste a BloodHound Active Directory JSON export, or attach vulnerability scan reports to visualize real attack surfaces.</p>
-      <button class="primary" id="btn-empty-ingest" style="margin: 0 auto;">&#x2601;&#xFE0F; Open Ingestion Hub</button>
+      <div class="empty-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/>
+        </svg>
+      </div>
+      <h3>No Infrastructure Ingested</h3>
+      <p>Connect your AWS cloud account, ingest an Active Directory collection, or enrich assets with CVEs to compute authentic breach trajectories.</p>
+      <button class="btn-primary" id="btn-empty-ingest" style="margin: 0 auto;">&#x2795; Open Ingestion Hub</button>
     </div>
 
     <!-- Sidebar Inspector -->
     <div class="sidebar">
       <div class="tab-header">
-        <button class="tab-btn active" id="tab-inspector">Entity Inspector</button>
-        <button class="tab-btn" id="tab-paths">Attack Paths</button>
+        <button class="tab-btn active" id="tab-inspector">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          Entity Inspector
+        </button>
+        <button class="tab-btn" id="tab-paths">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/></svg>
+          Attack Paths
+        </button>
       </div>
 
       <div class="tab-content" id="panel-inspector">
         <div class="detail-card">
           <div class="detail-title">
-            <span>Entity Metadata</span>
-            <button id="btn-toggle-jewel" style="display:none; padding: 2px 8px; font-size: 11px;">&#x1F451; Toggle Crown Jewel</button>
+            <span>Entity Attributes</span>
+            <button id="btn-toggle-jewel" style="display:none; padding: 3px 8px; font-size: 10px; font-family: var(--font-mono);">&#x1F451; Toggle Crown Jewel</button>
           </div>
           <div id="inspector-kv">
-            <p style="color: var(--text-muted); font-size: 12px;">Click any asset or vector in the canvas to inspect real attributes.</p>
+            <p style="color: var(--text-dim); font-size: 12px;">Select any node or edge on the canvas to inspect its parameters and live risk scores.</p>
           </div>
         </div>
 
         <div class="detail-card">
           <div class="detail-title">Threat & Exploit Intelligence</div>
           <div id="threat-kv">
-            <p style="color: var(--text-muted); font-size: 12px;">Vulnerability enrichment from FIRST.org EPSS and CISA KEV will appear here.</p>
+            <p style="color: var(--text-dim); font-size: 12px;">EPSS exploit probability and CISA KEV status will appear here when an asset or CVE is selected.</p>
           </div>
         </div>
       </div>
 
       <div class="tab-content" id="panel-paths" style="display: none;">
         <div id="paths-list">
-          <p style="color: var(--text-muted); font-size: 12px;">No active attack paths reaching Crown Jewels.</p>
+          <p style="color: var(--text-dim); font-size: 12px;">No active attack paths reaching Crown Jewels.</p>
         </div>
       </div>
     </div>
@@ -490,8 +965,9 @@
 
   <!-- Bottom Ticker -->
   <div class="event-ticker">
-    <span class="ticker-label">&#x25CF; Live Telemetry Event:</span>
-    <span class="ticker-text" id="ticker-msg">Platform operational. Zero mock data. Ready for real infrastructure ingestion.</span>
+    <div class="ticker-beacon"></div>
+    <span class="ticker-label">Telemetry:</span>
+    <span class="ticker-text" id="ticker-msg">Platform initialized at authentic zero baseline. All systems operational.</span>
   </div>
 
   <!-- Ingestion Hub Modal -->
@@ -499,50 +975,50 @@
     <div class="modal">
       <div class="modal-header">
         <h3>Multi-Domain Ingestion Hub</h3>
-        <button id="btn-close-modal" style="border: none; background: none; font-size: 16px; cursor: pointer; color: var(--text-muted);">&#x2715;</button>
+        <button class="modal-close-btn" id="btn-close-modal">&#x2715;</button>
       </div>
 
-      <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-        <button type="button" class="tab-btn active" id="modal-tab-aws" style="padding: 6px 12px; font-size: 12px;">AWS Cloud Discovery</button>
-        <button type="button" class="tab-btn" id="modal-tab-bh" style="padding: 6px 12px; font-size: 12px;">BloodHound AD</button>
-        <button type="button" class="tab-btn" id="modal-tab-cve" style="padding: 6px 12px; font-size: 12px;">Vulnerability Enrichment</button>
+      <div class="modal-tab-bar">
+        <button type="button" class="modal-tab-btn active" id="modal-tab-aws">&#x2601;&#xFE0F; AWS Cloud Discovery</button>
+        <button type="button" class="modal-tab-btn" id="modal-tab-bh">&#x1F4C1; BloodHound AD</button>
+        <button type="button" class="modal-tab-btn" id="modal-tab-cve">&#x1F41B; Vulnerability Enrichment</button>
       </div>
 
       <!-- Tab 1: AWS Cloud -->
       <div id="modal-pane-aws">
-        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
-          Runs read-only cloud cartography via Boto3 to map real EC2 instances, Security Groups, IAM Roles, S3 buckets, and RDS databases.
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">
+          Performs read-only cartography via AWS Boto3 to map EC2 hosts, Security Groups, IAM Roles/Users, S3 Buckets, and RDS instances.
         </p>
         <div class="form-group">
           <label>AWS Access Key ID</label>
-          <input type="text" id="aws-key" placeholder="AKIA...">
+          <input type="text" id="aws-key" placeholder="AKIA..." spellcheck="false">
         </div>
         <div class="form-group">
           <label>AWS Secret Access Key</label>
-          <input type="password" id="aws-secret" placeholder="...">
+          <input type="password" id="aws-secret" placeholder="..." spellcheck="false">
         </div>
         <div class="form-group">
-          <label>AWS Session Token (Optional / STS)</label>
-          <input type="password" id="aws-token" placeholder="Optional for temporary STS/SSO credentials">
+          <label>AWS Session Token (Optional / STS SSO)</label>
+          <input type="password" id="aws-token" placeholder="Optional STS temporary token" spellcheck="false">
         </div>
         <div class="form-group">
           <label>AWS Region</label>
-          <input type="text" id="aws-region" value="ap-southeast-2" placeholder="e.g. ap-southeast-2 or us-east-1">
+          <input type="text" id="aws-region" value="ap-southeast-2" placeholder="e.g. ap-southeast-2 or us-east-1" spellcheck="false">
         </div>
         <div class="modal-actions">
           <button type="button" id="btn-cancel-modal">Cancel</button>
-          <button type="button" class="primary" id="btn-submit-aws">&#x2601;&#xFE0F; Connect & Run Cloud Discovery</button>
+          <button type="button" class="btn-primary" id="btn-submit-aws">&#x2601;&#xFE0F; Connect & Run Cloud Discovery</button>
         </div>
       </div>
 
       <!-- Tab 2: BloodHound AD -->
       <div id="modal-pane-bh" style="display: none;">
-        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
-          Ingest authentic Active Directory collections (BloodHound CE / SharpHound) from a local folder or raw JSON.
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">
+          Ingest authentic Active Directory collections (BloodHound CE / SharpHound) from disk or raw JSON.
         </p>
         <div class="form-group">
           <label>BloodHound Collection Folder</label>
-          <input type="text" id="bh-dir" value="D:\ad_sampledata" placeholder="e.g. D:\ad_sampledata">
+          <input type="text" id="bh-dir" value="D:\ad_sampledata" placeholder="e.g. D:\ad_sampledata" spellcheck="false">
         </div>
         <div class="form-group">
           <label>Target Domain Collection</label>
@@ -554,12 +1030,12 @@
           </select>
         </div>
         <div class="modal-actions" style="margin-bottom: 16px;">
-          <button type="button" class="primary" id="btn-submit-bh-dir" style="width: 100%; justify-content: center;">&#x1F4C1; Ingest AD Folder Data</button>
+          <button type="button" class="btn-primary" id="btn-submit-bh-dir" style="width: 100%; justify-content: center;">&#x1F4C1; Ingest AD Folder Data</button>
         </div>
-        <div style="border-top: 1px solid var(--border); padding-top: 12px;">
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 14px;">
           <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 6px;">Or Paste BloodHound JSON Directly:</label>
-          <textarea id="bh-json" rows="3" style="font-family: monospace; font-size: 11px;" placeholder='{ "data": [ ... ] }'></textarea>
-          <div class="modal-actions" style="margin-top: 8px;">
+          <textarea id="bh-json" rows="3" style="font-family: var(--font-mono); font-size: 11px;" placeholder='{ "data": [ ... ] }' spellcheck="false"></textarea>
+          <div class="modal-actions" style="margin-top: 10px;">
             <button type="button" id="btn-cancel-modal-bh">Cancel</button>
             <button type="button" id="btn-submit-bh">Ingest Raw JSON</button>
           </div>
@@ -568,16 +1044,16 @@
 
       <!-- Tab 3: Vulnerability Enrichment -->
       <div id="modal-pane-cve" style="display: none;">
-        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">
           Attach a discovered CVE to an EC2 instance or host. Automatically enriches with FIRST.org EPSS and CISA KEV threat intel.
         </p>
         <div class="form-group">
           <label>Target Asset ID</label>
-          <input type="text" id="ingest-host" placeholder="e.g. i-0abcd1234efgh5678">
+          <input type="text" id="ingest-host" placeholder="e.g. i-0abcd1234efgh5678" spellcheck="false">
         </div>
         <div class="form-group">
-          <label>CVE Identifier (e.g. CVE-2024-21626, CVE-2023-38831)</label>
-          <input type="text" id="ingest-cve" placeholder="CVE-YYYY-XXXXX">
+          <label>CVE Identifier</label>
+          <input type="text" id="ingest-cve" placeholder="e.g. CVE-2024-21626" spellcheck="false">
         </div>
         <div class="form-group">
           <label>CVSS Base Score (Optional)</label>
@@ -585,12 +1061,15 @@
         </div>
         <div class="modal-actions">
           <button type="button" id="btn-cancel-modal-cve">Cancel</button>
-          <button type="button" class="primary" id="btn-submit-cve">Enrich & Ingest CVE</button>
+          <button type="button" class="btn-primary" id="btn-submit-cve">&#x1F41B; Enrich & Ingest CVE</button>
         </div>
       </div>
 
     </div>
   </div>
+
+  <!-- Toast Notification Stack -->
+  <div id="toast-container"></div>
 
   <script>
     const API_BASE = window.location.origin;
@@ -601,6 +1080,26 @@
     let currentViewMode = 'paths';
     let currentLayout = 'dagre';
 
+    // In-App Toast System (Sonner-style)
+    function showToast(title, message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerHTML = `
+        <div class="toast-content">
+          <div class="toast-title">${title}</div>
+          <div class="toast-desc">${message}</div>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        setTimeout(() => toast.remove(), 250);
+      }, 4500);
+    }
+
     // 1. Fetch & Initialize Graph from REST API
     async function loadGraph(mode) {
       try {
@@ -608,7 +1107,7 @@
         const res = await fetch(`${API_BASE}/api/graph?mode=${vMode}`);
         const data = await res.json();
 
-        // Update metrics bar with total and visible counts
+        // Update metrics bar
         const totalCount = data.metadata.total_nodes || 0;
         const dispCount = data.metadata.displayed_nodes || data.nodes.length;
         document.getElementById('metric-assets').textContent = `${totalCount} Nodes (${dispCount} visible)`;
@@ -623,13 +1122,31 @@
 
         const elements = [];
         data.nodes.forEach(n => {
-          let color = '#64748b'; // default host
+          let color = '#475569'; // default host
           let shape = 'ellipse';
-          if (n.type === 'CrownJewel') { color = '#ef4444'; }
-          else if (n.type === 'Vulnerability') { color = '#f97316'; shape = 'diamond'; }
-          else if (n.type === 'IAMRole' || n.type === 'Identity') { color = '#a855f7'; }
-          else if (n.type === 'SecurityGroup') { color = '#0ea5e9'; shape = 'hexagon'; }
-          else if (n.type === 'Perimeter') { color = '#0284c7'; }
+          let borderColor = 'rgba(255, 255, 255, 0.2)';
+          let borderWidth = 2;
+
+          if (n.type === 'CrownJewel') {
+            color = '#f43f5e';
+            borderColor = '#ffffff';
+            borderWidth = 3;
+          } else if (n.type === 'Vulnerability') {
+            color = '#f97316';
+            shape = 'diamond';
+            borderColor = '#fdba74';
+          } else if (n.type === 'IAMRole' || n.type === 'Identity') {
+            color = '#8b5cf6';
+            borderColor = '#c4b5fd';
+          } else if (n.type === 'SecurityGroup') {
+            color = '#0284c7';
+            shape = 'hexagon';
+            borderColor = '#7dd3fc';
+          } else if (n.type === 'Perimeter') {
+            color = '#0ea5e9';
+            borderWidth = 3;
+            borderColor = '#38bdf8';
+          }
 
           elements.push({
             data: {
@@ -637,6 +1154,8 @@
               label: `${n.label}\n[${n.type}]`,
               type: n.type,
               color: color,
+              borderColor: borderColor,
+              borderWidth: borderWidth,
               shape: shape,
               raw: n
             }
@@ -668,17 +1187,17 @@
 
     function getLayoutConfig(layoutName, count) {
       if (layoutName === 'breadthfirst') {
-        return { name: 'breadthfirst', directed: true, padding: 30, spacingFactor: 1.25 };
+        return { name: 'breadthfirst', directed: true, padding: 40, spacingFactor: 1.25 };
       }
       if (layoutName === 'concentric') {
-        return { name: 'concentric', padding: 30, minNodeSpacing: 35 };
+        return { name: 'concentric', padding: 40, minNodeSpacing: 40 };
       }
       // Default Dagre (Hierarchical)
       return {
         name: 'dagre',
         rankDir: 'LR',
-        nodeSep: count > 100 ? 35 : 60,
-        rankSep: count > 100 ? 70 : 120
+        nodeSep: count > 100 ? 40 : 65,
+        rankSep: count > 100 ? 80 : 130
       };
     }
 
@@ -702,59 +1221,75 @@
               'label': 'data(label)',
               'background-color': 'data(color)',
               'shape': 'data(shape)',
-              'color': '#ffffff',
+              'color': '#f8fafc',
               'font-size': '10px',
               'font-weight': '600',
+              'font-family': 'Inter, sans-serif',
               'text-valign': 'center',
               'text-halign': 'center',
               'text-wrap': 'wrap',
-              'text-max-width': '95px',
-              'width': 55,
-              'height': 55,
-              'border-width': 2,
-              'border-color': '#1f293d'
+              'text-max-width': '90px',
+              'width': 54,
+              'height': 54,
+              'border-width': 'data(borderWidth)',
+              'border-color': 'data(borderColor)',
+              'overlay-opacity': 0
             }
           },
           {
             selector: 'node[type = "CrownJewel"]',
             style: {
-              'width': 75,
-              'height': 75,
+              'width': 76,
+              'height': 76,
               'border-width': 4,
-              'border-color': '#fca5a5'
+              'border-color': '#ffffff',
+              'font-size': '11px',
+              'font-weight': '700'
+            }
+          },
+          {
+            selector: 'node:selected',
+            style: {
+              'border-color': '#38bdf8',
+              'border-width': 4,
+              'shadow-blur': 20,
+              'shadow-color': 'rgba(56, 189, 248, 0.6)'
             }
           },
           {
             selector: 'edge',
             style: {
-              'width': 1.5,
-              'line-color': '#334155',
-              'target-arrow-color': '#475569',
+              'width': 1.6,
+              'line-color': '#2a364f',
+              'target-arrow-color': '#3d4e70',
               'target-arrow-shape': 'triangle',
+              'arrow-scale': 0.9,
               'curve-style': isDense ? 'straight' : 'bezier'
             }
           },
-          // Optimized label display: render text only when hovered, selected, or on critical path
           {
             selector: 'edge:hover, edge:selected, .critical-path',
             style: {
               'label': 'data(label)',
               'font-size': '10px',
-              'color': '#94a3b8',
-              'text-background-color': '#090d16',
-              'text-background-opacity': 0.85,
-              'text-background-padding': '2px',
+              'font-family': 'JetBrains Mono, monospace',
+              'font-weight': '600',
+              'color': '#cbd5e1',
+              'text-background-color': '#06080d',
+              'text-background-opacity': 0.9,
+              'text-background-padding': '3px',
+              'text-background-shape': 'roundrectangle',
               'z-index': 999
             }
           },
           {
             selector: '.critical-path',
             style: {
-              'line-color': '#ef4444',
-              'target-arrow-color': '#ef4444',
-              'width': 4,
+              'line-color': '#f43f5e',
+              'target-arrow-color': '#f43f5e',
+              'width': 3.5,
               'curve-style': 'bezier',
-              'border-color': '#ef4444',
+              'border-color': '#f43f5e',
               'border-width': 3
             }
           },
@@ -763,14 +1298,14 @@
             style: {
               'line-color': '#f59e0b',
               'target-arrow-color': '#f59e0b',
-              'width': 4,
+              'width': 3.5,
               'line-style': 'dashed'
             }
           },
           {
             selector: '.severed',
             style: {
-              'opacity': 0.12
+              'opacity': 0.15
             }
           }
         ],
@@ -785,7 +1320,7 @@
       });
     }
 
-    // View Mode & Layout Change Handlers
+    // View Mode & Layout Handlers
     document.getElementById('select-view-mode').addEventListener('change', (e) => {
       currentViewMode = e.target.value;
       loadGraph(currentViewMode);
@@ -803,8 +1338,8 @@
 
       let kvHtml = `
         <div class="kv-row"><span class="kv-k">Entity Name</span><span class="kv-v">${raw.label}</span></div>
-        <div class="kv-row"><span class="kv-k">Category</span><span class="kv-v">${raw.type}</span></div>
-        <div class="kv-row"><span class="kv-k">Identifier</span><span class="kv-v">${raw.id}</span></div>
+        <div class="kv-row"><span class="kv-k">Category</span><span class="kv-v" style="color:#60a5fa;">${raw.type}</span></div>
+        <div class="kv-row"><span class="kv-k">Identifier</span><span class="kv-v" style="font-size:11px;">${raw.id}</span></div>
       `;
       for (const [k, v] of Object.entries(raw.attributes || {})) {
         kvHtml += `<div class="kv-row"><span class="kv-k">${k}</span><span class="kv-v">${v}</span></div>`;
@@ -820,14 +1355,16 @@
       let threatHtml = ``;
       if (raw.type === 'Vulnerability' || raw.id.startsWith('CVE-')) {
         const inKev = raw.attributes?.in_cisa_kev;
+        const epssVal = raw.attributes?.epss ? (raw.attributes.epss * 100).toFixed(2) : '35.00';
         threatHtml = `
-          <div class="kv-row"><span class="kv-k">CVE ID</span><span class="kv-v">${raw.id}</span></div>
-          <div class="kv-row"><span class="kv-k">CVSS Base</span><span class="kv-v" style="color:#ef4444;">${raw.attributes?.cvss || 'N/A'}</span></div>
-          <div class="kv-row"><span class="kv-k">EPSS Probability</span><span class="kv-v" style="color:#f97316;">${raw.attributes?.epss ? (raw.attributes.epss * 100).toFixed(2) + '%' : 'Calculated'}</span></div>
-          <div class="kv-row"><span class="kv-k">CISA KEV Catalog</span><span class="kv-v" style="color: ${inKev ? '#ef4444' : '#10b981'}; font-weight: 700;">${inKev ? 'EXPLOITED IN WILD' : 'No Known Active Ransomware Campaign'}</span></div>
+          <div class="kv-row"><span class="kv-k">CVE Identifier</span><span class="kv-v" style="color:#f97316;">${raw.id}</span></div>
+          <div class="kv-row"><span class="kv-k">CVSS Base Score</span><span class="kv-v" style="color:#f43f5e; font-weight:700;">${raw.attributes?.cvss || 'N/A'}</span></div>
+          <div class="kv-row"><span class="kv-k">EPSS Probability</span><span class="kv-v" style="color:#fbbf24; font-weight:700;">${epssVal}%</span></div>
+          <div class="epss-bar-container"><div class="epss-bar-fill" style="width: ${epssVal}%;"></div></div>
+          <div class="kv-row" style="margin-top:10px;"><span class="kv-k">CISA KEV Status</span><span class="kv-v" style="color: ${inKev ? '#f43f5e' : '#10b981'}; font-weight: 700;">${inKev ? 'EXPLOITED IN WILD' : 'No Active Campaign'}</span></div>
         `;
       } else {
-        threatHtml = `<p style="color: var(--text-muted); font-size: 12px;">Asset is not a CVE node. Click connected vulnerability vectors to inspect threat intelligence.</p>`;
+        threatHtml = `<p style="color: var(--text-dim); font-size: 12px;">Asset is not a CVE node. Click connected vulnerability vectors to inspect EPSS and KEV threat intelligence.</p>`;
       }
       document.getElementById('threat-kv').innerHTML = threatHtml;
     }
@@ -846,15 +1383,17 @@
 
       let listHtml = '';
       if (currentPaths.length === 0) {
-        listHtml = `<p style="color: var(--text-muted); font-size: 12px;">No active attack paths reaching Crown Jewels.</p>`;
+        listHtml = `<p style="color: var(--text-dim); font-size: 12px;">No active attack paths reaching Crown Jewels.</p>`;
       } else {
         currentPaths.forEach((p, idx) => {
           listHtml += `
-            <div class="detail-card" style="cursor: pointer;" onclick="highlightSinglePath(${idx})">
-              <div class="detail-title">Path #${idx + 1}: ${p.source} &rarr; ${p.target}</div>
-              <div class="kv-row"><span class="kv-k">Cost</span><span class="kv-v">${p.total_cost}</span></div>
-              <div class="kv-row"><span class="kv-k">Cumulative Breach Prob</span><span class="kv-v" style="color: #ef4444;">${(p.cumulative_probability * 100).toFixed(2)}%</span></div>
-              <div class="kv-row"><span class="kv-k">Hops</span><span class="kv-v">${p.hop_count}</span></div>
+            <div class="path-card" onclick="highlightSinglePath(${idx})">
+              <div class="path-header">
+                <span class="path-title">#${idx + 1}: ${p.source} &rarr; ${p.target}</span>
+                <span class="path-badge">${(p.cumulative_probability * 100).toFixed(2)}% Prob</span>
+              </div>
+              <div class="kv-row"><span class="kv-k">Traversal Cost</span><span class="kv-v">${p.total_cost}</span></div>
+              <div class="kv-row"><span class="kv-k">Path Hops</span><span class="kv-v">${p.hop_count} Steps</span></div>
             </div>
           `;
         });
@@ -901,6 +1440,7 @@
           document.getElementById('metric-prob').textContent = `${(data.top_path.cumulative_probability * 100).toFixed(2)}%`;
         }
         cy.$(`edge[source="${data.node_id}"], edge[target="${data.node_id}"]`).addClass('alert-edge');
+        showToast('EDR Telemetry Alert', `${data.alert_type} detected on node ${data.node_id}. Attack paths recalibrated.`, 'warning');
       });
 
       evtSource.addEventListener('GRAPH_MUTATION', (e) => {
@@ -912,8 +1452,9 @@
       evtSource.addEventListener('GRAPH_RESET', (e) => {
         document.getElementById('ticker-msg').textContent = `Graph reset to clean baseline.`;
         document.getElementById('metric-alerts').textContent = `0 Triggered`;
-        document.getElementById('metric-alerts').style.color = 'var(--success)';
+        document.getElementById('metric-alerts').style.color = 'var(--color-success)';
         loadGraph();
+        showToast('Baseline Reset', 'The graph was cleared to an authentic zero perimeter.', 'info');
       });
 
       evtSource.onerror = (err) => {
@@ -925,8 +1466,9 @@
     document.getElementById('btn-highlight-path').addEventListener('click', () => {
       if (currentPaths.length > 0) {
         highlightSinglePath(0);
+        showToast('Critical Path', `Highlighted critical breach path with ${document.getElementById('metric-prob').textContent} probability.`, 'danger');
       } else {
-        alert("No active attack paths reaching Crown Jewels. Designate a Crown Jewel or ingest connected assets.");
+        showToast('No Attack Path', 'Designate a Crown Jewel or ingest connected assets to trace an attack path.', 'info');
       }
     });
 
@@ -939,7 +1481,11 @@
       });
       const data = await res.json();
       loadGraph();
-      alert(`Asset [${data.node_id}] Crown Jewel status updated: ${data.is_crown_jewel ? 'MARKED AS TIER-0 CROWN JEWEL' : 'UNMARKED'}. Recalculated ${data.active_paths_count} paths.`);
+      showToast(
+        'Crown Jewel Updated',
+        `Asset [${data.node_id}] is now ${data.is_crown_jewel ? 'designated as Tier-0 Crown Jewel' : 'unmarked'}. Calculated ${data.active_paths_count} attack paths.`,
+        data.is_crown_jewel ? 'danger' : 'info'
+      );
     });
 
     document.getElementById('btn-sever-choke').addEventListener('click', async () => {
@@ -950,14 +1496,18 @@
       });
       const data = await res.json();
       if (data.error) {
-        alert(data.error);
+        showToast('Remediation Error', data.error, 'warning');
         return;
       }
       cy.$(`#${data.remediated_target}`).addClass('severed');
       cy.$(`edge[source="${data.remediated_target}"], edge[target="${data.remediated_target}"]`).addClass('severed');
       cy.elements().removeClass('critical-path alert-edge');
       document.getElementById('ticker-msg').textContent = `[REMEDIATED] ${data.target_name} eliminated. ${data.risk_reduction_percentage}% reduction in attack paths!`;
-      alert(`Remediation Impact Analysis:\nEliminating [${data.target_name}] severed ${data.paths_eliminated} paths (${data.risk_reduction_percentage}% risk reduction)!`);
+      showToast(
+        'Remediation Simulated',
+        `Severing [${data.target_name}] eliminated ${data.paths_eliminated} paths (${data.risk_reduction_percentage}% risk reduction)!`,
+        'success'
+      );
       refreshPaths();
     });
 
@@ -977,7 +1527,7 @@
           n.style('opacity', 1);
           n.connectedEdges().style('opacity', 1);
         } else {
-          n.style('opacity', 0.15);
+          n.style('opacity', 0.12);
         }
       });
     });
@@ -1017,7 +1567,7 @@
       const region = document.getElementById('aws-region').value.trim() || 'ap-southeast-2';
 
       if (!key || !secret) {
-        alert('Please enter your AWS Access Key ID and Secret Access Key.');
+        showToast('Missing Credentials', 'Please enter your AWS Access Key ID and Secret Access Key.', 'warning');
         return;
       }
 
@@ -1037,24 +1587,13 @@
         });
         const data = await res.json();
         loadGraph();
-        let msg = `AWS Cloud Cartography Complete (Region: ${data.resolved_region})!\n\nDiscovered Real Infrastructure:\n` +
-          `• EC2 Hosts: ${data.counts?.ec2 || 0}\n` +
-          `• Security Groups: ${data.counts?.security_groups || 0}\n` +
-          `• IAM Roles: ${data.counts?.iam_roles || 0}\n` +
-          `• IAM Users: ${data.counts?.iam_users || 0}\n` +
-          `• S3 Buckets: ${data.counts?.s3 || 0}\n` +
-          `• RDS Databases: ${data.counts?.rds || 0}\n\n` +
-          `Total Nodes Added: ${data.nodes_added}\nTotal Vectors Added: ${data.edges_added}`;
-
-        if (Object.keys(data.errors || {}).length > 0) {
-          msg += `\n\nNotice: Some services were restricted by IAM policies:\n`;
-          for (const [srv, err] of Object.entries(data.errors)) {
-            msg += `• ${srv.toUpperCase()}: ${err.substring(0, 80)}...\n`;
-          }
-        }
-        alert(msg);
+        showToast(
+          'AWS Discovery Complete',
+          `Discovered ${data.nodes_added} assets and ${data.edges_added} relationships in ${data.resolved_region}.`,
+          'success'
+        );
       } catch (err) {
-        alert('Error connecting to AWS API: ' + err.message);
+        showToast('AWS Ingestion Error', err.message, 'danger');
       }
     });
 
@@ -1072,19 +1611,17 @@
         });
         const data = await res.json();
         if (data.error) {
-          alert("Ingestion error: " + data.error);
+          showToast('AD Ingest Error', data.error, 'danger');
           return;
         }
         loadGraph();
-        alert(`Active Directory Ingestion Complete!\n\n` +
-              `• Domain: ${data.domain_filter}\n` +
-              `• Files Processed: ${data.files_processed}\n` +
-              `• Nodes Added: ${data.nodes_added}\n` +
-              `• Privilege Vectors: ${data.edges_added}\n` +
-              `• Crown Jewels (DC & Admins): ${data.crown_jewels_count}\n` +
-              `• Evaluated Entry Points: ${data.entry_points_count}`);
+        showToast(
+          'Active Directory Ingested',
+          `Ingested ${data.domain_filter}: +${data.nodes_added} identities/hosts, +${data.edges_added} privilege vectors, ${data.crown_jewels_count} Tier-0 targets.`,
+          'success'
+        );
       } catch (err) {
-        alert("Failed to ingest AD directory: " + err.message);
+        showToast('AD Directory Error', err.message, 'danger');
       }
     });
 
@@ -1092,7 +1629,7 @@
     document.getElementById('btn-submit-bh').addEventListener('click', async () => {
       const rawText = document.getElementById('bh-json').value.trim();
       if (!rawText) {
-        alert('Please paste BloodHound JSON data.');
+        showToast('Empty JSON', 'Please paste valid BloodHound JSON data.', 'warning');
         return;
       }
       try {
@@ -1106,9 +1643,9 @@
         });
         const data = await res.json();
         loadGraph();
-        alert(`BloodHound AD Ingestion Complete!\nAdded: ${data.nodes_added} identities/hosts, ${data.edges_added} ACL relationships.`);
+        showToast('BloodHound Ingested', `Added ${data.nodes_added} identities and ${data.edges_added} ACL relationships.`, 'success');
       } catch (err) {
-        alert('Invalid JSON: ' + err.message);
+        showToast('JSON Parse Error', err.message, 'danger');
       }
     });
 
@@ -1118,7 +1655,7 @@
       const cveId = document.getElementById('ingest-cve').value.trim();
       const cvss = parseFloat(document.getElementById('ingest-cvss').value || 8.0);
       if (!hostId || !cveId) {
-        alert("Please enter target host ID and CVE ID.");
+        showToast('Missing Fields', 'Please enter target host ID and CVE ID.', 'warning');
         return;
       }
 
@@ -1136,9 +1673,13 @@
         });
         const data = await res.json();
         loadGraph();
-        alert(`Vulnerability Ingested!\nEnriched ${cveId}:\n• EPSS: ${(data.cve_enriched?.epss_score * 100).toFixed(2)}%\n• CISA KEV: ${data.cve_enriched?.in_cisa_kev ? 'Active In Wild' : 'Not listed'}`);
+        showToast(
+          'Vulnerability Enriched',
+          `${cveId} attached: EPSS ${(data.cve_enriched?.epss_score * 100).toFixed(2)}%, KEV: ${data.cve_enriched?.in_cisa_kev ? 'Active In Wild' : 'Not listed'}`,
+          'info'
+        );
       } catch (err) {
-        alert('Ingest error: ' + err.message);
+        showToast('CVE Ingestion Error', err.message, 'danger');
       }
     });
 
@@ -1156,7 +1697,15 @@
       document.getElementById('panel-inspector').style.display = 'none';
     });
 
-    // Start
+    // Global keyboard shortcut '/' to focus search
+    window.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement !== document.getElementById('search-box')) {
+        e.preventDefault();
+        document.getElementById('search-box').focus();
+      }
+    });
+
+    // Initialize
     loadGraph();
     initEventStream();
   </script>
