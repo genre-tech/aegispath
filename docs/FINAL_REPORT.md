@@ -9,12 +9,12 @@
 ### **Computer Science & Engineering**
 
 **Under the Guidance of:**  
-**Dr. Bharat Pahadiya**  
-*Associate Professor, Department of Computer Science & Engineering*
+**Mr. Dhananjay Kumar Prasad**  
+*Assistant Assistant Professor, Department of Computer Science & Engineering*
 
 **Submitted By:**  
 **Tanishq Jain**  
-*Enrollment No.: 233CS0188*  
+*Enrollment No.: 233CSF010*  
 *Session: 2025–2026*
 
 ```
@@ -27,7 +27,7 @@
 
 ## CANDIDATE'S DECLARATION
 
-I hereby declare that the work presented in this Major Project Report entitled **"AegisPath Enterprise: An Adaptive Attack Path Management & Multi-Cloud Cyber Threat Intelligence Engine"**, submitted towards the completion of the degree of **Bachelor of Technology in Computer Science & Engineering** at Oriental Institute of Science & Technology, Oriental University, Indore, is an authentic record of our own work carried out under the supervision of **Dr. Bharat Pahadiya**, Department of Computer Science & Engineering.
+I hereby declare that the work presented in this Major Project Report entitled **"AegisPath Enterprise: An Adaptive Attack Path Management & Multi-Cloud Cyber Threat Intelligence Engine"**, submitted towards the completion of the degree of **Bachelor of Technology in Computer Science & Engineering** at Oriental Institute of Science & Technology, Oriental University, Indore, is an authentic record of our own work carried out under the supervision of **Mr. Dhananjay Kumar Prasad**, Department of Computer Science & Engineering.
 
 I have not submitted the matter embodied in this report for the award of any other degree or diploma to any other University or Institute.
 
@@ -35,20 +35,20 @@ I have not submitted the matter embodied in this report for the award of any oth
 **Place:** Indore  
 
 **Tanishq Jain**  
-Enrollment No.: 233CS0188  
+Enrollment No.: 233CSF010  
 
 ---
 
 ## CERTIFICATE OF THE GUIDE
 
-This is to certify that the Major Project Report entitled **"AegisPath Enterprise: An Adaptive Attack Path Management & Multi-Cloud Cyber Threat Intelligence Engine"**, submitted by **Tanishq Jain** (Enrollment No.: 233CS0188) in partial fulfillment of the requirements for the award of the Degree of **Bachelor of Technology in Computer Science & Engineering** of Oriental University, Indore, is a bonafide record of work carried out by him under my guidance and supervision.
+This is to certify that the Major Project Report entitled **"AegisPath Enterprise: An Adaptive Attack Path Management & Multi-Cloud Cyber Threat Intelligence Engine"**, submitted by **Tanishq Jain** (Enrollment No.: 233CSF010) in partial fulfillment of the requirements for the award of the Degree of **Bachelor of Technology in Computer Science & Engineering** of Oriental University, Indore, is a bonafide record of work carried out by him under my guidance and supervision.
 
 To the best of my knowledge, the matter embodied in this report has not been submitted to any other University or Institute for the award of any degree or diploma.
 
 <br><br>
 
 ---------------------------------------------  
-**Dr. Bharat Pahadiya**  
+**Mr. Dhananjay Kumar Prasad**  
 Project Guide, Department of CSE  
 Oriental University, Indore  
 
@@ -63,14 +63,14 @@ Oriental University, Indore
 
 ## ACKNOWLEDGEMENT
 
-I express our deep sense of gratitude and profound respect to our project guide, **Dr. Bharat Pahadiya**, Department of Computer Science & Engineering, Oriental University, Indore, for his exemplary guidance, invaluable suggestions, constant motivation, and continuous supervision throughout the conceptualization, architecture design, and implementation of this Major Project.
+I express our deep sense of gratitude and profound respect to our project guide, **Mr. Dhananjay Kumar Prasad**, Department of Computer Science & Engineering, Oriental University, Indore, for his exemplary guidance, invaluable suggestions, constant motivation, and continuous supervision throughout the conceptualization, architecture design, and implementation of this Major Project.
 
 I also place on record our sincere thanks to the **Head of the Department**, Computer Science & Engineering, and the faculty members of the Department for providing the necessary computational infrastructure, laboratory facilities, and academic encouragement required to conduct large-scale graph analytics and multi-cloud vulnerability simulations.
 
 Finally, I extend our heartfelt thanks to our parents, peers, and friends whose unwavering moral support and encouragement enabled us to bring this endeavor to a successful completion.
 
 **Tanishq Jain**  
-(Enrollment No.: 233CS0188)
+(Enrollment No.: 233CSF010)
 
 ---
 
@@ -148,7 +148,7 @@ Furthermore, AegisPath introduces a graph-theoretic **Critical Cut Remediation E
 
 | Figure No. | Figure Title | Page / Section |
 | :--- | :--- | :--- |
-| **Figure 1.1** | The Disconnect: CVSS Severity List vs. Chained Attack Path Reality | Chapter 1 |
+| **Figure 1.1** | Enterprise Attack Path Traversal vs. Flat CVSS Severity List | Chapter 1 |
 | **Figure 3.1** | Unified Use Case Diagram for Security Operators, Admins, and CTI Ingestion | Chapter 3 |
 | **Figure 3.2** | Sequence Diagram for Real-Time Threat Ingestion and Graph Cost Recalculation | Chapter 3 |
 | **Figure 3.3** | Activity Diagram for Shortest Attack Path Traversal and Min-Cut Isolation | Chapter 3 |
@@ -216,6 +216,9 @@ Traditional enterprise vulnerability management tools suffer from four fundament
 2. **Identity Blindness:** Traditional vulnerability scanners cannot trace lateral movement through Active Directory misconfigurations (e.g., GenericAll rights, WriteDacl, Kerberoasting, or DCSync abuse).
 3. **Static Topology Snapshots:** Existing scanners run batch scans weekly or monthly, remaining completely blind to ephemeral cloud resources or zero-day weaponization occurring between scan intervals.
 4. **Remediation Fatigue:** Generating thousands of disconnected vulnerability tickets paralyzes IT remediation teams without providing guidance on which actions actually sever attack chains.
+
+![Figure 1.1: Enterprise Attack Path Traversal vs. Flat CVSS Severity List](figures/fig_1_1_cvss_vs_attackpath.png)
+*Figure 1.1: Enterprise Attack Path Traversal vs. Flat CVSS Severity List*
 
 ### 1.4 Statement of the Problem
 The central problem addressed by this project is:
@@ -309,6 +312,9 @@ flowchart LR
     SA --> UC5
 ```
 
+![Figure 3.1: Unified System Use Case Diagram](figures/fig_3_1_use_case.png)
+*Figure 3.1: Unified System Use Case Diagram*
+
 ### 3.3 Sequence Diagrams
 The following sequence illustrates the real-time event flow when an external CTI feed update arrives:
 
@@ -332,6 +338,9 @@ sequenceDiagram
     UI->>UI: Highlight Re-Ranked Attack Vector in Red
 ```
 
+![Figure 3.2: Real-Time Threat Ingestion & Path Recalculation Sequence Diagram](figures/fig_3_2_sequence.png)
+*Figure 3.2: Real-Time Threat Ingestion & Path Recalculation Sequence Diagram*
+
 ### 3.4 Activity Diagrams & Flow of Control
 The operational workflow for identifying and remediating an attack path proceeds as follows:
 
@@ -353,6 +362,9 @@ flowchart TD
     L --> M[Generate Recommended Edge Severance Plan]
     M --> End([Display in Canvas Dashboard])
 ```
+
+![Figure 3.3: Attack Path Calculation & Min-Cut Remediation Flow Activity Diagram](figures/fig_3_3_activity.png)
+*Figure 3.3: Attack Path Calculation & Min-Cut Remediation Flow Activity Diagram*
 
 ### 3.5 Class Diagram & Object Model
 
@@ -408,6 +420,9 @@ classDiagram
 
 ---
 
+![Figure 3.4: Core Object-Oriented Component Class Hierarchy & Object Model](figures/fig_3_4_class_diagram.png)
+*Figure 3.4: Core Object-Oriented Component Class Hierarchy & Object Model*
+
 # CHAPTER 4: SYSTEM DESIGN & ARCHITECTURE
 
 ### 4.1 Four-Tier Layered Architecture
@@ -446,6 +461,9 @@ AegisPath Enterprise is engineered as a robust four-tier distributed software ar
 +-----------------------------------------------------------------------------------+
 ```
 
+![Figure 4.1: AegisPath Enterprise Four-Tier System Architecture](figures/fig_4_1_architecture.png)
+*Figure 4.1: AegisPath Enterprise Four-Tier System Architecture*
+
 ### 4.2 Database & Graph Schema Design (Data Dictionary)
 
 #### Table 4.1: Graph Schema Data Dictionary — Node Entities
@@ -470,6 +488,9 @@ AegisPath Enterprise is engineered as a robust four-tier distributed software ar
 | `WriteDacl` | User / Group | Object | Ability to modify object security descriptors to grant access |
 | `CanAbuse` | Computer | CloudRole | Privilege escalation path into multi-cloud control plane |
 
+![Figure 4.2: Graph Schema Entity-Relationship and Edge Model](figures/fig_4_2_schema.png)
+*Figure 4.2: Graph Schema Entity-Relationship and Edge Model*
+
 ### 4.3 Component & Deployment Architecture
 The entire AegisPath stack is containerized using Docker and orchestrated via Docker Compose, guaranteeing reproducible execution across local workstations and cloud virtual machines.
 
@@ -491,6 +512,15 @@ The entire AegisPath stack is containerized using Docker and orchestrated via Do
 ```
 
 ---
+
+![Figure 4.3: Multi-Container Docker Microservice Deployment Topology](figures/fig_4_3_deployment.png)
+*Figure 4.3: Multi-Container Docker Microservice Deployment Topology*
+
+![Figure 4.4: Cytoscape.js Blueprint Canvas View](figures/fig_4_4_canvas.png)
+*Figure 4.4: Cytoscape.js Blueprint Canvas View with Critical Attack Path Highlight*
+
+![Figure 4.5: Multi-Domain Ingestion Hub Modal](figures/fig_4_5_telemetry.png)
+*Figure 4.5: Multi-Domain Ingestion Hub Modal & Telemetry Monitor*
 
 # CHAPTER 5: IMPLEMENTATION DETAILS
 
@@ -517,6 +547,9 @@ def compute_edge_weight(base_cost: float, epss_score: float, is_cisa_kev: bool) 
     final_cost = max(0.01, base_cost / dynamic_divisor)
     return round(final_cost, 4)
 ```
+
+![Figure 5.1: Mathematical Formulation of Dynamic Cost-Tensor Calculation](figures/fig_5_1_cost_tensor.png)
+*Figure 5.1: Mathematical Formulation of Dynamic Cost-Tensor Calculation*
 
 ### 5.3 Active Directory & Cloud Ingestion Pipeline
 The ingestion pipeline reads SharpHound format JSON structures and normalizes identity relationships into nodes and edges:
@@ -618,6 +651,9 @@ Empirical benchmarks were conducted using the authentic `PHANTOM.CORP` enterpris
 | **CISA KEV Sync Duration** | 412 Milliseconds | 3.50 Seconds | **8.5x Faster** |
 | **Shortest Path Computation** | 11.4 Milliseconds | 120 Milliseconds | **10.5x Faster** |
 | **Choke Point Isolation Latency** | 18.2 Milliseconds | 250 Milliseconds | **13.7x Faster** |
+
+![Figure 6.1: Betweenness Centrality & Path Finding Latency vs. Graph Size Benchmark Curve](figures/fig_6_1_benchmark.png)
+*Figure 6.1: Betweenness Centrality & Path Finding Latency vs. Graph Size Benchmark Curve*
 
 ### 6.4 Comparative Evaluation with Industry Baselines
 

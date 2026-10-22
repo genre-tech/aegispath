@@ -6,13 +6,13 @@
 ### BACHELOR OF TECHNOLOGY  
 **IN**  
 ### COMPUTER SCIENCE & ENGINEERING  
-**VII SEMESTER**
+**VIII SEMESTER**
 
 ---
 
 | **Submitted By** | **Guided By** |
 | :--- | :--- |
-| **Tanishq Jain**<br/>Enrollment Number: `233CS0188` | **Dr. Bharat Pahadiya**<br/>Professor & Project Coordinator |
+| **Tanishq Jain**<br/>Enrollment Number: `233CSF010` | **Mr. Dhananjay Kumar Prasad**<br/>Professor & Project Coordinator |
 
 **ORIENTAL UNIVERSITY, INDORE**  
 Sanwer Road, Jakhya, Opposite Revati Range, Gate No. 1, Indore, Madhya Pradesh – 452015  
